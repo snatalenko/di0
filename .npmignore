@@ -1,0 +1,7 @@
+.nyc_output/
+.vscode/
+coverage/
+.editorconfig
+.eslintrc.json
+jsconfig.json
+README.MD

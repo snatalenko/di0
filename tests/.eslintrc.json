@@ -1,0 +1,11 @@
+{
+    "env": {
+        "mocha": true
+    },
+    "rules": {
+        "no-useless-constructor": "off",
+        "no-unused-vars": "off",
+        "no-empty-function": "off",
+        "no-unused-expressions": "off"
+    }
+}
