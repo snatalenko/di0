@@ -1,6 +1,7 @@
 .nyc_output/
 .vscode/
 coverage/
+scripts/
 .editorconfig
 .eslintrc.json
 jsconfig.json
