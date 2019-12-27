@@ -114,6 +114,18 @@ class Container {
 			}
 		}
 
+		// bind container methods to container
+		// to allow their usage in dependent constructors and factories
+		const methodsToBind = [this.get, this.getAll, this.createInstance];
+		for (const method of methodsToBind) {
+			Object.defineProperty(this, method.name, {
+				value: method.bind(this),
+				configurable: true,
+				enumerable: false,
+				writable: false
+			});
+		}
+
 		for (const { id, factory } of this._types.filter(t => !t.aliases.length))
 			this._instances[id] = factory(this);
 	}

@@ -61,6 +61,22 @@ describe('Container', () => {
 			container.createInstance(({ foo }) => foo);
 			expect(fooCreated).to.eq(true);
 		});
+
+		it('injects container methods', () => {
+
+			class Z {
+				constructor({ get, getAll, createInstance }) {
+					this.x = get('x');
+					this.xx = getAll('x');
+					this.xi = createInstance(X);
+				}
+			}
+
+			const z = container.createInstance(Z);
+			expect(z).to.have.property('x').that.is.instanceOf(X);
+			expect(z).to.have.property('xx').that.eqls([z.x]);
+			expect(z).to.have.property('xi').that.is.instanceOf(X);
+		});
 	});
 
 	describe('builder', () => {
