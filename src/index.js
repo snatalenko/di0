@@ -1,11 +1,6 @@
 'use strict';
 
 /**
- * @template T
- * @typedef {{ new(c?: Container & { [key: string]: any }): T } | ((c?: Container & { [key: string]: any }) => T)} TClassOrFactory
- */
-
-/**
  * @param {TClassOrFactory<any>} func
  * @returns {boolean}
  */
@@ -15,10 +10,9 @@ function isClass(func) {
 }
 
 /**
- * @template TArgs
  * @param {Container} container
- * @param {TArgs & object} additionalParameters
- * @returns {Container & TArgs}
+ * @param {TParameterObject} additionalParameters
+ * @returns {Container}
  */
 function extendContainer(container, additionalParameters) {
 	if (!container)
@@ -46,13 +40,29 @@ class TypeConfig {
 		if (Type.length > 1)
 			throw new TypeError('Type cannot have more than 1 argument');
 
+		/**
+		 * Unique type configuration identifier
+		 * @type {Symbol}
+		 */
 		this.id = Symbol(Type.name);
+
+		/**
+		 * List of type aliases
+		 * @type {string[]}
+		 */
 		this.aliases = [];
 
-		/** @type {"single" | "per-dependency" | "per-container"} */
+		/**
+		 * How to instantiate the type
+		 * @type {"single" | "per-dependency" | "per-container"}
+		 */
 		this.instanceType = 'per-container';
 
-		/** @type {(c: Container) => T} */
+		/**
+		 * Type instance factory
+		 * @param {Container} container
+		 * @returns {object}
+		 */
 		this.factory = container => container.createInstance(Type);
 	}
 
@@ -61,6 +71,7 @@ class TypeConfig {
 	 * The alias will be used to inject object instance as dependency to other types.
 	 *
 	 * @param {string} alias
+	 * @returns {TypeConfig}
 	 */
 	as(alias) {
 		if (typeof alias !== 'string' || !alias.length)
@@ -75,17 +86,29 @@ class TypeConfig {
 	/**
 	 * Instruct to create object instances once per containers tree
 	 * (current container and derived containers)
+	 *
+	 * @returns {TypeConfig}
 	 */
 	asSingleInstance() {
 		this.instanceType = 'single';
 		return this;
 	}
 
+	/**
+	 * Create instance per each dependency
+	 *
+	 * @returns {TypeConfig}
+	 */
 	asInstancePerDependency() {
 		this.instanceType = 'per-dependency';
 		return this;
 	}
 
+	/**
+	 * Create instance per container (default behavior)
+	 *
+	 * @returns {TypeConfig}
+	 */
 	asInstancePerContainer() {
 		this.instanceType = 'per-container';
 		return this;
@@ -97,7 +120,7 @@ class Container {
 	/**
 	 * @param {object} [options]
 	 * @param {TypeConfig[]} [options.types]
-	 * @param {{ [key: string | Symbol]: any }} [options.singletones]
+	 * @param {TParameterObject} [options.singletones]
 	 */
 	constructor({ types = [], singletones = {} } = {}) {
 		this._types = [...types];
@@ -131,6 +154,8 @@ class Container {
 	}
 
 	/**
+	 * Get instance by alias
+	 *
 	 * @param {string | Symbol} alias
 	 * @returns {object}
 	 */
@@ -154,6 +179,8 @@ class Container {
 	}
 
 	/**
+	 * Get all instances by alias
+	 *
 	 * @param {string} alias
 	 * @returns {object[]}
 	 */
@@ -169,9 +196,11 @@ class Container {
 	}
 
 	/**
+	 * Create instance of a given type
+	 *
 	 * @template T
 	 * @param {TClassOrFactory<T>} Type
-	 * @param {{ [key: string]: any }} [additionalParams]
+	 * @param {TParameterObject} [additionalParams]
 	 * @returns {T}
 	 */
 	createInstance(Type, additionalParams) {
@@ -185,6 +214,8 @@ class Container {
 
 	/**
 	 * Create an instance of ContainerBuilder for container extension
+	 *
+	 * @returns {ContainerBuilder}
 	 */
 	builder() {
 		// eslint-disable-next-line no-use-before-define
@@ -200,7 +231,7 @@ class ContainerBuilder {
 	/**
 	 * @param {object} [options]
 	 * @param {TypeConfig[]} [options.types]
-	 * @param {{ [key: string | Symbol]: any }} [options.singletones]
+	 * @param {TParameterObject} [options.singletones]
 	 */
 	constructor({ types = [], singletones = {} } = {}) {
 		this._types = [...types];
@@ -208,6 +239,8 @@ class ContainerBuilder {
 	}
 
 	/**
+	 * Register type or factory
+	 *
 	 * @template T
 	 * @param {TClassOrFactory<T>} Type
 	 * @param {string} [alias]
@@ -223,9 +256,13 @@ class ContainerBuilder {
 	}
 
 	/**
+	 * Register instance
+	 * (which will be a singleton with an alias)
+	 *
 	 * @template T
 	 * @param {T} instance
 	 * @param {string} alias
+	 * @returns {TypeConfig<T>}
 	 */
 	registerInstance(instance, alias) {
 		const t = new TypeConfig(() => instance)
@@ -236,6 +273,11 @@ class ContainerBuilder {
 		return t;
 	}
 
+	/**
+	 * Create container with the registered types
+	 *
+	 * @returns {Container}
+	 */
 	container() {
 		return new Container({
 			types: this._types,

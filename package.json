@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "Dependency injection for ES6 classes",
   "main": "index.js",
+  "types": "./types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/snatalnko/di6.git"
@@ -19,7 +20,8 @@
     "test": "mocha tests/unit/",
     "changelog": "conventional-changelog -n ./scripts/changelog -i CHANGELOG.md -s",
     "preversion": "npm run lint && npm test",
-    "version": "npm run changelog && git add CHANGELOG.md"
+    "version": "npm run changelog && git add CHANGELOG.md",
+    "definitions": "jsdoc -X ./src/ | ./scripts/jsdoc-to-dts.js --output ./types/classes/"
   },
   "keywords": [
     "dependency",
@@ -35,6 +37,7 @@
     "conventional-changelog": "^3.1.18",
     "coveralls": "^3.0.9",
     "eslint": "^6.8.0",
+    "jsdoc": "^3.6.3",
     "mocha": "^6.2.2",
     "nyc": "^15.0.0"
   }
