@@ -1,3 +1,7 @@
+## [0.3.2](https://github.com/snatalnko/di6/compare/v0.3.1...v0.3.2) (2020-01-05)
+
+
+
 ## [0.3.1](https://github.com/snatalnko/di6/compare/v0.3.0...v0.3.1) (2020-01-05)
 
 
