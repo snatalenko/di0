@@ -1,16 +1,19 @@
-declare class ContainerBuilder {
+namespace DI6 {
 
-	constructor(options?: { types?: Array<TypeConfig>, singletones?: TParameterObject }): ContainerBuilder;
+	declare class ContainerBuilder {
 
-	/** Register type or factory */
-	register<T>(Type: TClassOrFactory<T>, alias?: string): TypeConfig<T>;
+		constructor(options?: { types?: Array<TypeConfig>, singletones?: TParameterObject }): void;
 
-	/**
-	 * Register instance
-	 * (which will be a singleton with an alias)
-	 */
-	registerInstance<T>(instance: T, alias: string): TypeConfig<T>;
+		/** Register type or factory */
+		register(Type: TClassOrFactory<T>, alias?: string): TypeConfig<T>;
 
-	/** Create container with the registered types */
-	container(): Container;
+		/**
+		 * Register instance
+		 * (which will be a singleton with an alias)
+		 */
+		registerInstance(instance: T, alias: string): TypeConfig<T>;
+
+		/** Create container with the registered types */
+		container(): Container;
+	}
 }

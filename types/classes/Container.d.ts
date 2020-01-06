@@ -1,16 +1,19 @@
-declare class Container {
+namespace DI6 {
 
-	constructor(options?: { types?: Array<TypeConfig>, singletones?: TParameterObject }): Container;
+	declare class Container {
 
-	/** Get instance by alias */
-	get(alias: string | Symbol): object;
+		constructor(options?: { types?: Array<TypeConfig>, singletones?: TParameterObject }): void;
 
-	/** Get all instances by alias */
-	getAll(alias: string): Array<object>;
+		/** Get instance by alias */
+		get(alias: string | Symbol): object;
 
-	/** Create instance of a given type */
-	createInstance<T>(Type: TClassOrFactory<T>, additionalParams?: TParameterObject): T;
+		/** Get all instances by alias */
+		getAll(alias: string): Array<object>;
 
-	/** Create an instance of ContainerBuilder for container extension */
-	builder(): ContainerBuilder;
+		/** Create instance of a given type */
+		createInstance<T>(Type: TClassOrFactory<T>, additionalParams?: TParameterObject): T;
+
+		/** Create an instance of ContainerBuilder for container extension */
+		builder(): ContainerBuilder;
+	}
 }

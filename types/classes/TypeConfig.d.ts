@@ -1,35 +1,38 @@
-declare class TypeConfig<T> {
+namespace DI6 {
 
-	/** Unique type configuration identifier */
-	id: Symbol;
+	declare class TypeConfig<T> {
 
-	/** List of type aliases */
-	aliases: Array<string>;
+		/** Unique type configuration identifier */
+		id: Symbol;
 
-	/** How to instantiate the type */
-	instanceType: "single" | "per-dependency" | "per-container";
+		/** List of type aliases */
+		aliases: Array<string>;
 
-	/** Creates an instance of TypeConfig<T> */
-	constructor(Type: TClassOrFactory<T>): TypeConfig<T>;
+		/** How to instantiate the type */
+		instanceType: "single" | "per-dependency" | "per-container";
 
-	/** Type instance factory */
-	factory(container: Container): T;
+		/** Creates an instance of TypeConfig<T> */
+		constructor(Type: TClassOrFactory<T>): void;
 
-	/**
-	 * Instruct to expose object instance on container instance with a given `alias`.
-	 * The alias will be used to inject object instance as dependency to other types.
-	 */
-	as(alias: string): TypeConfig<T>;
+		/** Type instance factory */
+		factory(container: Container): T;
 
-	/**
-	 * Instruct to create object instances once per containers tree
-	 * (current container and derived containers)
-	 */
-	asSingleInstance(): TypeConfig<T>;
+		/**
+		 * Instruct to expose object instance on container instance with a given `alias`.
+		 * The alias will be used to inject object instance as dependency to other types.
+		 */
+		as(alias: string): TypeConfig<T>;
 
-	/** Create instance per each dependency */
-	asInstancePerDependency(): TypeConfig<T>;
+		/**
+		 * Instruct to create object instances once per containers tree
+		 * (current container and derived containers)
+		 */
+		asSingleInstance(): TypeConfig<T>;
 
-	/** Create instance per container (default behavior) */
-	asInstancePerContainer(): TypeConfig<T>;
+		/** Create instance per each dependency */
+		asInstancePerDependency(): TypeConfig<T>;
+
+		/** Create instance per container (default behavior) */
+		asInstancePerContainer(): TypeConfig<T>;
+	}
 }

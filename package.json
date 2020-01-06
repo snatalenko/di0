@@ -21,7 +21,7 @@
     "changelog": "conventional-changelog -n ./scripts/changelog -i CHANGELOG.md -s",
     "preversion": "npm run lint && npm test",
     "version": "npm run changelog && git add CHANGELOG.md",
-    "definitions": "jsdoc -X ./src/ | ./scripts/jsdoc-to-dts.js --output ./types/classes/"
+    "definitions": "jsdoc -X ./src/ | ./scripts/jsdoc-to-dts.js --output ./types/classes/ --namespace DI6"
   },
   "keywords": [
     "dependency",

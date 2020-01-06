@@ -61,7 +61,7 @@ class TypeConfig {
 		/**
 		 * Type instance factory
 		 * @param {Container} container
-		 * @returns {object}
+		 * @returns {T}
 		 */
 		this.factory = container => container.createInstance(Type);
 	}
@@ -71,7 +71,7 @@ class TypeConfig {
 	 * The alias will be used to inject object instance as dependency to other types.
 	 *
 	 * @param {string} alias
-	 * @returns {TypeConfig}
+	 * @returns {TypeConfig<T>}
 	 */
 	as(alias) {
 		if (typeof alias !== 'string' || !alias.length)
@@ -87,7 +87,7 @@ class TypeConfig {
 	 * Instruct to create object instances once per containers tree
 	 * (current container and derived containers)
 	 *
-	 * @returns {TypeConfig}
+	 * @returns {TypeConfig<T>}
 	 */
 	asSingleInstance() {
 		this.instanceType = 'single';
@@ -97,7 +97,7 @@ class TypeConfig {
 	/**
 	 * Create instance per each dependency
 	 *
-	 * @returns {TypeConfig}
+	 * @returns {TypeConfig<T>}
 	 */
 	asInstancePerDependency() {
 		this.instanceType = 'per-dependency';
@@ -107,7 +107,7 @@ class TypeConfig {
 	/**
 	 * Create instance per container (default behavior)
 	 *
-	 * @returns {TypeConfig}
+	 * @returns {TypeConfig<T>}
 	 */
 	asInstancePerContainer() {
 		this.instanceType = 'per-container';
