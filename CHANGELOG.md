@@ -1,3 +1,11 @@
+## [0.3.3](https://github.com/snatalnko/di6/compare/v0.3.2...v0.3.3) (2020-01-06)
+
+
+### Changes
+
+* Wrap types in a namespace ([b5809a4](https://github.com/snatalnko/di6/commit/b5809a481dc340c9b0e7cddd6d4bde11dbad06b2))
+
+
 ## [0.3.2](https://github.com/snatalnko/di6/compare/v0.3.1...v0.3.2) (2020-01-05)
 
 
