@@ -1,3 +1,19 @@
+# [0.4.0](https://github.com/snatalnko/di6/compare/v0.3.3...v0.4.0) (2020-01-09)
+
+
+### Features
+
+* Detect circular dependencies ([a3b67c6](https://github.com/snatalnko/di6/commit/a3b67c6ee616e5c1e84853d1d883cd000b7a97a2))
+
+### Changes
+
+* Validate type alias for conflict with container methods ([ac75530](https://github.com/snatalnko/di6/commit/ac75530bfca1d5eafe343dbf0608f22ee5c0e81a))
+
+### Documentation
+
+* Describe class extensions and generics in definitions ([d20c4c4](https://github.com/snatalnko/di6/commit/d20c4c44551d52855f70dd4c1d2f8351cc3a6a5a))
+
+
 ## [0.3.3](https://github.com/snatalnko/di6/compare/v0.3.2...v0.3.3) (2020-01-06)
 
 
