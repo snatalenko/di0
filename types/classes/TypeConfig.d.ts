@@ -9,7 +9,7 @@ namespace DI6 {
 		aliases: Array<string>;
 
 		/** How to instantiate the type */
-		instanceType: "single" | "per-dependency" | "per-container";
+		instanceType: TInstanceType;
 
 		/** Creates an instance of TypeConfig<T> */
 		constructor(Type: TClassOrFactory<T>): void;

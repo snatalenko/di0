@@ -1,6 +1,15 @@
 /* eslint-disable no-use-before-define */
 'use strict';
 
+/** @type {TInstanceType} */
+const INSTANCE_SINGLE = 'single';
+
+/** @type {TInstanceType} */
+const INSTANCE_PER_DEPENDENCY = 'per-dependency';
+
+/** @type {TInstanceType} */
+const INSTANCE_PER_CONTAINER = 'per-container';
+
 /**
  * @param {TClassOrFactory<any>} func
  * @returns {boolean}
@@ -55,9 +64,9 @@ class TypeConfig {
 
 		/**
 		 * How to instantiate the type
-		 * @type {"single" | "per-dependency" | "per-container"}
+		 * @type {TInstanceType}
 		 */
-		this.instanceType = 'per-container';
+		this.instanceType = INSTANCE_PER_CONTAINER;
 
 		/**
 		 * Type instance factory
@@ -99,7 +108,7 @@ class TypeConfig {
 	 * @returns {TypeConfig<T>}
 	 */
 	asSingleInstance() {
-		this.instanceType = 'single';
+		this.instanceType = INSTANCE_SINGLE;
 		return this;
 	}
 
@@ -109,7 +118,7 @@ class TypeConfig {
 	 * @returns {TypeConfig<T>}
 	 */
 	asInstancePerDependency() {
-		this.instanceType = 'per-dependency';
+		this.instanceType = INSTANCE_PER_DEPENDENCY;
 		return this;
 	}
 
@@ -119,7 +128,7 @@ class TypeConfig {
 	 * @returns {TypeConfig<T>}
 	 */
 	asInstancePerContainer() {
-		this.instanceType = 'per-container';
+		this.instanceType = INSTANCE_PER_CONTAINER;
 		return this;
 	}
 }
@@ -179,9 +188,9 @@ class Container {
 		const { id, instanceType, factory } = types[types.length - 1];
 		const instance = this._singletones[id] || this._instances[id] || factory(this);
 
-		if (instanceType === 'single')
+		if (instanceType === INSTANCE_SINGLE)
 			this._singletones[id] = instance;
-		else if (instanceType === 'per-container')
+		else if (instanceType === INSTANCE_PER_CONTAINER)
 			this._instances[id] = instance;
 
 		return instance;
