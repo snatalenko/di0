@@ -1,6 +1,8 @@
 /* eslint-disable no-use-before-define */
 'use strict';
 
+const CircularDependencyError = require('./CircularDependencyError');
+
 /** @type {TInstanceType} */
 const INSTANCE_SINGLE = 'single';
 
@@ -145,6 +147,12 @@ class Container {
 		this._instances = {};
 		this._singletones = singletones;
 
+		/**
+		 * Type aliases, stacked on each type instantiation
+		 * @type {string[]}
+		 */
+		this._dependencyStack = [];
+
 		for (const { aliases } of this._types) {
 			for (const alias of aliases) {
 				Object.defineProperty(this, alias, {
@@ -186,7 +194,28 @@ class Container {
 			throw new Error(`alias "${alias}" is not registered`);
 
 		const { id, instanceType, factory } = types[types.length - 1];
-		const instance = this._singletones[id] || this._instances[id] || factory(this);
+		if (this._singletones[id])
+			return this._singletones[id];
+
+		if (this._instances[id])
+			return this._instances[id];
+
+		let instance;
+		if (typeof alias === 'string') {
+			if (this._dependencyStack.includes(alias))
+				throw new CircularDependencyError([...this._dependencyStack, alias]);
+
+			this._dependencyStack.push(alias);
+			try {
+				instance = factory(this);
+			}
+			finally {
+				this._dependencyStack.pop();
+			}
+		}
+		else {
+			instance = factory(this);
+		}
 
 		if (instanceType === INSTANCE_SINGLE)
 			this._singletones[id] = instance;

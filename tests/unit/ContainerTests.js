@@ -110,6 +110,18 @@ describe('Container', () => {
 
 			expect(container.get('x')).to.eq('foo');
 		});
+
+		it('detects circular dependencies', () => {
+
+			builder.register(({ a }) => null, 'c');
+			builder.register(({ b }) => null, 'a');
+			builder.register(({ c }) => null, 'b');
+			container = builder.container();
+
+			expect(() => {
+				container.get('a');
+			}).to.throw('Circular dependency detected: a --> b --> c --> a');
+		});
 	});
 
 	describe('getAll', () => {
