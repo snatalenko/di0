@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 'use strict';
 
 /**
@@ -78,6 +79,14 @@ class TypeConfig {
 			throw new TypeError('Alias argument must be a non-empty String');
 		if (this.aliases.includes(alias))
 			throw new TypeError(`Alias "${alias}" is already registered for the type`);
+
+		const forbiddenAliases = [
+			Container.prototype.get.name,
+			Container.prototype.getAll.name,
+			Container.prototype.createInstance.name
+		];
+		if (forbiddenAliases.includes(alias))
+			throw new TypeError(`Alias "${alias}" conflicts with container method`);
 
 		this.aliases.push(alias);
 		return this;
@@ -218,7 +227,6 @@ class Container {
 	 * @returns {ContainerBuilder}
 	 */
 	builder() {
-		// eslint-disable-next-line no-use-before-define
 		return new ContainerBuilder({
 			types: this._types.filter(t => t.aliases.length),
 			singletones: this._singletones

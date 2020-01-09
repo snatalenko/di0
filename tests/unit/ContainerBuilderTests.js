@@ -88,6 +88,13 @@ describe('ContainerBuilder', () => {
 				builder.register(zFact);
 			}).to.throw(TypeError);
 		});
+
+		it('fails if alias conflicts with container methods', () => {
+			const builder = new ContainerBuilder();
+			expect(() => {
+				builder.register(c => new X(), 'get');
+			}).to.throw(TypeError);
+		});
 	});
 });
 
