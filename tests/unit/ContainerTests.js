@@ -18,7 +18,7 @@ describe('Container', () => {
 	let builder;
 
 	/** @type {Container} */
-	let container = new Container();
+	let container;
 
 	beforeEach(() => {
 		builder = new ContainerBuilder();

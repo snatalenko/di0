@@ -22,6 +22,18 @@ describe('ContainerBuilder', () => {
 
 			expect(container).to.be.instanceOf(Container);
 		});
+
+		it('allows container builder extension', () => {
+
+			class ExtendedBuilder extends ContainerBuilder {
+			}
+
+			const builder = new ExtendedBuilder();
+			const container = builder.container();
+			const derivedBuilder = container.builder();
+
+			expect(derivedBuilder).to.be.instanceOf(ExtendedBuilder);
+		});
 	});
 
 	describe('register', () => {

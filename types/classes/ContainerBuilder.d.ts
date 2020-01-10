@@ -2,7 +2,7 @@ namespace DI6 {
 
 	declare class ContainerBuilder {
 
-		constructor(options?: { types?: Array<TypeConfig>, singletones?: TParameterObject }): void;
+		constructor(options?: { types?: Readonly<Array<TypeConfig>>, singletones?: TParameterObject }): void;
 
 		/** Register type or factory */
 		register<T>(Type: TClassOrFactory<T>, alias?: string): TypeConfig<T>;

@@ -138,14 +138,16 @@ class TypeConfig {
 class Container {
 
 	/**
-	 * @param {object} [options]
-	 * @param {TypeConfig[]} [options.types]
-	 * @param {TParameterObject} [options.singletones]
+	 * @param {object} options
+	 * @param {Readonly<TypeConfig[]>} options.types
+	 * @param {TParameterObject} options.singletones
+	 * @param {function({ singletones: object }): ContainerBuilder} options.builderFactory
 	 */
-	constructor({ types = [], singletones = {} } = {}) {
-		this._types = [...types];
+	constructor({ types, singletones, builderFactory }) {
+		this._types = types;
 		this._instances = {};
 		this._singletones = singletones;
+		this._builderFactory = builderFactory;
 
 		/**
 		 * Type aliases, stacked on each type instantiation
@@ -265,8 +267,7 @@ class Container {
 	 * @returns {ContainerBuilder}
 	 */
 	builder() {
-		return new ContainerBuilder({
-			types: this._types.filter(t => t.aliases.length),
+		return this._builderFactory({
 			singletones: this._singletones
 		});
 	}
@@ -276,7 +277,7 @@ class ContainerBuilder {
 
 	/**
 	 * @param {object} [options]
-	 * @param {TypeConfig[]} [options.types]
+	 * @param {Readonly<TypeConfig[]>} [options.types]
 	 * @param {TParameterObject} [options.singletones]
 	 */
 	constructor({ types = [], singletones = {} } = {}) {
@@ -325,9 +326,15 @@ class ContainerBuilder {
 	 * @returns {Container}
 	 */
 	container() {
+		const BuilderType = Object.getPrototypeOf(this).constructor;
+
 		return new Container({
-			types: this._types,
-			singletones: this._singletones
+			types: Object.freeze([...this._types]),
+			singletones: this._singletones,
+			builderFactory: ({ singletones }) => new BuilderType({
+				types: this._types.filter(t => t.aliases.length),
+				singletones
+			})
 		});
 	}
 }

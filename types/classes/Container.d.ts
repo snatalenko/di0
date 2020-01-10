@@ -2,7 +2,7 @@ namespace DI6 {
 
 	declare class Container {
 
-		constructor(options?: { types?: Array<TypeConfig>, singletones?: TParameterObject }): void;
+		constructor(options: { types: Readonly<Array<TypeConfig>>, singletones: TParameterObject, builderFactory: function }): void;
 
 		/** Get instance by alias */
 		get(alias: string | Symbol): object;
