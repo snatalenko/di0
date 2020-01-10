@@ -1,3 +1,15 @@
+# [0.5.0](https://github.com/snatalnko/di6/compare/v0.4.0...v0.5.0) (2020-01-10)
+
+
+### Features
+
+* Log instance creations when logger is registered ([e247aac](https://github.com/snatalnko/di6/commit/e247aacf6cf7e148a1015203306b16fc24b005ed))
+
+### Changes
+
+* Container builder of an extended type returned by builder() method ([be48e1b](https://github.com/snatalnko/di6/commit/be48e1b3e50fc935eb2b5a61a6090393c43e8ae8))
+
+
 # [0.4.0](https://github.com/snatalnko/di6/compare/v0.3.3...v0.4.0) (2020-01-09)
 
 
