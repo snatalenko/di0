@@ -120,7 +120,26 @@ describe('Container', () => {
 
 			expect(() => {
 				container.get('a');
-			}).to.throw('Circular dependency detected: a --> b --> c --> a');
+			}).to.throw('Circular dependency detected: a.b.c.a');
+		});
+
+		it('logs instance creations when logger is registered', () => {
+
+			const logs = [];
+			builder.register(Y, 'y');
+			builder.register(() => ({
+				log(...args) {
+					logs.push(args);
+				}
+			}), 'logger');
+
+			container = builder.container();
+			container.get('y');
+
+			expect(logs).to.eql([
+				['silly', 'y.x instance created'],
+				['silly', 'y instance created']
+			]);
 		});
 	});
 

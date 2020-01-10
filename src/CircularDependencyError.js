@@ -6,8 +6,11 @@
  * @extends {Error}
  */
 class CircularDependencyError extends Error {
+	/**
+	 * @param {Readonly<string[]>} stack
+	 */
 	constructor(stack) {
-		super(`Circular dependency detected: ${stack.filter(s => typeof s === 'string').join(' --> ')}`);
+		super(`Circular dependency detected: ${stack.join('.')}`);
 	}
 }
 

@@ -2,6 +2,6 @@ namespace DI6 {
 
 	declare class CircularDependencyError extends Error {
 
-		constructor(): void;
+		constructor(stack: Readonly<Array<string>>): void;
 	}
 }

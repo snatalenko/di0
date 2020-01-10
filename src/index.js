@@ -210,6 +210,9 @@ class Container {
 			this._dependencyStack.push(alias);
 			try {
 				instance = factory(this);
+
+				if ('logger' in this && alias !== 'logger')
+					this.logger.log('silly', `${this._dependencyStack.join('.')} instance created`);
 			}
 			finally {
 				this._dependencyStack.pop();
