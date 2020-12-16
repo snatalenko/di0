@@ -1,3 +1,11 @@
+# [1.0.0-0](https://github.com/snatalnko/di6/compare/v0.5.0...v1.0.0-0) (2020-12-16)
+
+
+### Refactoring
+
+* Rewrite using TypeScript ([94dbf59](https://github.com/snatalnko/di6/commit/94dbf59df16c980c387b9c63d54ff5816fda57b8))
+
+
 # [0.5.0](https://github.com/snatalnko/di6/compare/v0.4.0...v0.5.0) (2020-01-10)
 
 
