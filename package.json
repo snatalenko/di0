@@ -1,6 +1,6 @@
 {
   "name": "di6",
-  "version": "1.0.0-1",
+  "version": "1.0.0-2",
   "description": "Dependency injection for ES6 classes",
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
