@@ -54,30 +54,24 @@ export class TypeConfig<T> {
 	/**
 	 * Instruct to create object instances once per containers tree
 	 * (current container and derived containers)
-	 *
-	 * @returns {TypeConfig<T>}
 	 */
-	asSingleInstance() {
+	asSingleInstance(): TypeConfig<T> {
 		this.instanceType = INSTANCE_SINGLE;
 		return this;
 	}
 
 	/**
 	 * Create instance per each dependency
-	 *
-	 * @returns {TypeConfig<T>}
 	 */
-	asInstancePerDependency() {
+	asInstancePerDependency(): TypeConfig<T> {
 		this.instanceType = INSTANCE_PER_DEPENDENCY;
 		return this;
 	}
 
 	/**
 	 * Create instance per container (default behavior)
-	 *
-	 * @returns {TypeConfig<T>}
 	 */
-	asInstancePerContainer() {
+	asInstancePerContainer(): TypeConfig<T> {
 		this.instanceType = INSTANCE_PER_CONTAINER;
 		return this;
 	}
