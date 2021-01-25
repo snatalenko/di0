@@ -1,10 +1,11 @@
-.editorconfig
-.eslintrc.json
-.nyc_output/
-.vscode/
+/.nyc_output/
+/.vscode/
 /coverage/
 /scripts/
+/src/
 /tests/
-jsconfig.json
+.editorconfig
+.eslintrc.json
 *.tgz
+jsconfig.json
 tsconfig.json
