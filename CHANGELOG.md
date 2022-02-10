@@ -1,3 +1,11 @@
+# [1.0.0-5](https://github.com/snatalnko/di6/compare/v1.0.0-4...v1.0.0-5) (2022-02-10)
+
+
+### Fixes
+
+* Vulnerabilities in dev dependencies ([7a7ca30](https://github.com/snatalnko/di6/commit/7a7ca30b606f935b374c7ab2bc86f1d04759937d))
+
+
 # [1.0.0-4](https://github.com/snatalnko/di6/compare/v1.0.0-3...v1.0.0-4) (2022-02-10)
 
 
