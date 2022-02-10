@@ -1,3 +1,11 @@
+# [1.0.0-4](https://github.com/snatalnko/di6/compare/v1.0.0-3...v1.0.0-4) (2022-02-10)
+
+
+### Build System
+
+* Use full sources for typing ([12a2e4b](https://github.com/snatalnko/di6/commit/12a2e4bd889c779e93163eb28c24a7fd15b59657))
+
+
 # [1.0.0-3](https://github.com/snatalnko/di6/compare/v1.0.0-2...v1.0.0-3) (2021-01-25)
 
 
