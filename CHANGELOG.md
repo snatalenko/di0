@@ -1,96 +1,96 @@
-# [1.0.0-5](https://github.com/snatalnko/di6/compare/v1.0.0-4...v1.0.0-5) (2022-02-10)
+# [1.0.0-5](https://github.com/snatalenko/di0/compare/v1.0.0-4...v1.0.0-5) (2022-02-10)
 
 
 ### Fixes
 
-* Vulnerabilities in dev dependencies ([7a7ca30](https://github.com/snatalnko/di6/commit/7a7ca30b606f935b374c7ab2bc86f1d04759937d))
+* Vulnerabilities in dev dependencies ([7a7ca30](https://github.com/snatalenko/di0/commit/7a7ca30b606f935b374c7ab2bc86f1d04759937d))
 
 
-# [1.0.0-4](https://github.com/snatalnko/di6/compare/v1.0.0-3...v1.0.0-4) (2022-02-10)
+# [1.0.0-4](https://github.com/snatalenko/di0/compare/v1.0.0-3...v1.0.0-4) (2022-02-10)
 
 
 ### Build System
 
-* Use full sources for typing ([12a2e4b](https://github.com/snatalnko/di6/commit/12a2e4bd889c779e93163eb28c24a7fd15b59657))
+* Use full sources for typing ([12a2e4b](https://github.com/snatalenko/di0/commit/12a2e4bd889c779e93163eb28c24a7fd15b59657))
 
 
-# [1.0.0-3](https://github.com/snatalnko/di6/compare/v1.0.0-2...v1.0.0-3) (2021-01-25)
-
-
-
-# [1.0.0-2](https://github.com/snatalnko/di6/compare/v1.0.0-1...v1.0.0-2) (2020-12-16)
+# [1.0.0-3](https://github.com/snatalenko/di0/compare/v1.0.0-2...v1.0.0-3) (2021-01-25)
 
 
 
-# [1.0.0-1](https://github.com/snatalnko/di6/compare/v1.0.0-0...v1.0.0-1) (2020-12-16)
+# [1.0.0-2](https://github.com/snatalenko/di0/compare/v1.0.0-1...v1.0.0-2) (2020-12-16)
 
 
 
-# [1.0.0-0](https://github.com/snatalnko/di6/compare/v0.5.0...v1.0.0-0) (2020-12-16)
+# [1.0.0-1](https://github.com/snatalenko/di0/compare/v1.0.0-0...v1.0.0-1) (2020-12-16)
+
+
+
+# [1.0.0-0](https://github.com/snatalenko/di0/compare/v0.5.0...v1.0.0-0) (2020-12-16)
 
 
 ### Refactoring
 
-* Rewrite using TypeScript ([94dbf59](https://github.com/snatalnko/di6/commit/94dbf59df16c980c387b9c63d54ff5816fda57b8))
+* Rewrite using TypeScript ([94dbf59](https://github.com/snatalenko/di0/commit/94dbf59df16c980c387b9c63d54ff5816fda57b8))
 
 
-# [0.5.0](https://github.com/snatalnko/di6/compare/v0.4.0...v0.5.0) (2020-01-10)
-
-
-### Features
-
-* Log instance creations when logger is registered ([e247aac](https://github.com/snatalnko/di6/commit/e247aacf6cf7e148a1015203306b16fc24b005ed))
-
-### Changes
-
-* Container builder of an extended type returned by builder() method ([be48e1b](https://github.com/snatalnko/di6/commit/be48e1b3e50fc935eb2b5a61a6090393c43e8ae8))
-
-
-# [0.4.0](https://github.com/snatalnko/di6/compare/v0.3.3...v0.4.0) (2020-01-09)
+# [0.5.0](https://github.com/snatalenko/di0/compare/v0.4.0...v0.5.0) (2020-01-10)
 
 
 ### Features
 
-* Detect circular dependencies ([a3b67c6](https://github.com/snatalnko/di6/commit/a3b67c6ee616e5c1e84853d1d883cd000b7a97a2))
+* Log instance creations when logger is registered ([e247aac](https://github.com/snatalenko/di0/commit/e247aacf6cf7e148a1015203306b16fc24b005ed))
 
 ### Changes
 
-* Validate type alias for conflict with container methods ([ac75530](https://github.com/snatalnko/di6/commit/ac75530bfca1d5eafe343dbf0608f22ee5c0e81a))
+* Container builder of an extended type returned by builder() method ([be48e1b](https://github.com/snatalenko/di0/commit/be48e1b3e50fc935eb2b5a61a6090393c43e8ae8))
+
+
+# [0.4.0](https://github.com/snatalenko/di0/compare/v0.3.3...v0.4.0) (2020-01-09)
+
+
+### Features
+
+* Detect circular dependencies ([a3b67c6](https://github.com/snatalenko/di0/commit/a3b67c6ee616e5c1e84853d1d883cd000b7a97a2))
+
+### Changes
+
+* Validate type alias for conflict with container methods ([ac75530](https://github.com/snatalenko/di0/commit/ac75530bfca1d5eafe343dbf0608f22ee5c0e81a))
 
 ### Documentation
 
-* Describe class extensions and generics in definitions ([d20c4c4](https://github.com/snatalnko/di6/commit/d20c4c44551d52855f70dd4c1d2f8351cc3a6a5a))
+* Describe class extensions and generics in definitions ([d20c4c4](https://github.com/snatalenko/di0/commit/d20c4c44551d52855f70dd4c1d2f8351cc3a6a5a))
 
 
-## [0.3.3](https://github.com/snatalnko/di6/compare/v0.3.2...v0.3.3) (2020-01-06)
+## [0.3.3](https://github.com/snatalenko/di0/compare/v0.3.2...v0.3.3) (2020-01-06)
 
 
 ### Changes
 
-* Wrap types in a namespace ([b5809a4](https://github.com/snatalnko/di6/commit/b5809a481dc340c9b0e7cddd6d4bde11dbad06b2))
+* Wrap types in a namespace ([b5809a4](https://github.com/snatalenko/di0/commit/b5809a481dc340c9b0e7cddd6d4bde11dbad06b2))
 
 
-## [0.3.2](https://github.com/snatalnko/di6/compare/v0.3.1...v0.3.2) (2020-01-05)
-
-
-
-## [0.3.1](https://github.com/snatalnko/di6/compare/v0.3.0...v0.3.1) (2020-01-05)
+## [0.3.2](https://github.com/snatalenko/di0/compare/v0.3.1...v0.3.2) (2020-01-05)
 
 
 
-# [0.3.0](https://github.com/snatalnko/di6/compare/v0.2.0...v0.3.0) (2020-01-05)
+## [0.3.1](https://github.com/snatalenko/di0/compare/v0.3.0...v0.3.1) (2020-01-05)
 
 
 
-# [0.2.0](https://github.com/snatalnko/di6/compare/v0.1.0...v0.2.0) (2019-12-27)
+# [0.3.0](https://github.com/snatalenko/di0/compare/v0.2.0...v0.3.0) (2020-01-05)
+
+
+
+# [0.2.0](https://github.com/snatalenko/di0/compare/v0.1.0...v0.2.0) (2019-12-27)
 
 
 ### Features
 
-* Inject container methods (get, getAll, etc) ([3b944cb](https://github.com/snatalnko/di6/commit/3b944cb2cf876bc8fa46e26a858c7f2214210c93))
+* Inject container methods (get, getAll, etc) ([3b944cb](https://github.com/snatalenko/di0/commit/3b944cb2cf876bc8fa46e26a858c7f2214210c93))
 
 ### Build System
 
-* Add automatic changelog generating ([6139983](https://github.com/snatalnko/di6/commit/6139983009e622a2da7512393d5d6aeb0e11d6e1))
+* Add automatic changelog generating ([6139983](https://github.com/snatalenko/di0/commit/6139983009e622a2da7512393d5d6aeb0e11d6e1))
 
 
