@@ -1,5 +1,5 @@
 {
-  "name": "di6",
+  "name": "di0",
   "version": "1.0.0-3",
   "description": "Dependency injection for ES6 classes",
   "main": "./dist/index.js",
@@ -30,7 +30,7 @@
     "di",
     "es6"
   ],
-  "author": "@stas_natalenko",
+  "author": "@snatalenko",
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.2.0",
