@@ -3,7 +3,7 @@
   "version": "1.0.0-3",
   "description": "Dependency injection for ES6 classes",
   "main": "./dist/index.js",
-  "types": "./types/index.d.ts",
+  "types": "./src/index.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/snatalnko/di6.git"

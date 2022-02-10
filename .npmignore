@@ -2,7 +2,6 @@
 /.vscode/
 /coverage/
 /scripts/
-/src/
 /tests/
 .editorconfig
 .eslintrc.json

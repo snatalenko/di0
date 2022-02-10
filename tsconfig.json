@@ -11,8 +11,7 @@
             "ES2018"
         ],
         "target": "ES2018",
-        "declaration": true,
-        "declarationDir": "./types",
+        "declaration": false,
         "strictNullChecks": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
