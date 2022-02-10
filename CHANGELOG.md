@@ -1,3 +1,19 @@
+# [1.0.0](https://github.com/snatalenko/di0/compare/v0.5.0...v1.0.0) (2022-02-10)
+
+
+### Fixes
+
+* Vulnerabilities in dev dependencies ([7a7ca30](https://github.com/snatalenko/di0/commit/7a7ca30b606f935b374c7ab2bc86f1d04759937d))
+
+### Refactoring
+
+* Rewrite using TypeScript ([94dbf59](https://github.com/snatalenko/di0/commit/94dbf59df16c980c387b9c63d54ff5816fda57b8))
+
+### Build System
+
+* Use full sources for typing ([12a2e4b](https://github.com/snatalenko/di0/commit/12a2e4bd889c779e93163eb28c24a7fd15b59657))
+
+
 
 # [0.5.0](https://github.com/snatalenko/di0/compare/v0.4.0...v0.5.0) (2020-01-10)
 

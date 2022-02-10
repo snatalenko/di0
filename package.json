@@ -1,6 +1,6 @@
 {
   "name": "di0",
-  "version": "1.0.0-5",
+  "version": "1.0.0",
   "description": "Dependency injection for ES6 classes",
   "main": "./dist/index.js",
   "types": "./src/index.ts",
