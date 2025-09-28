@@ -1,3 +1,18 @@
+# [1.1.0](https://github.com/snatalenko/di0/compare/v1.0.0...v1.1.0) (2025-09-28)
+
+
+### Features
+
+* Add `has` method on Container for type existence check ([6d90d11](https://github.com/snatalenko/di0/commit/6d90d1144b741dfc21f2323229d1e943ee7a5c86))
+* Add container typing option as generic ContainerBuilder parameter ([c72e515](https://github.com/snatalenko/di0/commit/c72e5156fc0e677c9a2e2eb1b604f0dbe2958820))
+
+### Build System
+
+* Update test dependencies ([d2f35cd](https://github.com/snatalenko/di0/commit/d2f35cd28eb6d57099fa0a0826bfa54a42da449c))
+* Upgrade typescript to v5.9.2 ([0278900](https://github.com/snatalenko/di0/commit/027890049354ae550e1ddd7ecce92cc3707f8b22))
+* Add cleanup script ([de3aa25](https://github.com/snatalenko/di0/commit/de3aa25f96dff71bb7b14761ec2ddfbfa63fcbee))
+
+
 # [1.0.0](https://github.com/snatalenko/di0/compare/v0.5.0...v1.0.0) (2022-02-10)
 
 
