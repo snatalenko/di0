@@ -28,7 +28,7 @@ export class Container {
 	#types: Readonly<TypeConfig<any>[]>;
 	#instances: any = {};
 	#singletones: any;
-	#builderFactory: (options: { singletones: object }) => ContainerBuilder;
+	#builderFactory: (options: { singletones: object }) => ContainerBuilder<this>;
 
 	logger?: {
 		log: (...args: any) => void
@@ -40,7 +40,7 @@ export class Container {
 	constructor({ types, singletones, builderFactory }: {
 		types: Readonly<TypeConfig<any>[]>,
 		singletones: TParameterObject,
-		builderFactory: (options: { singletones: object }) => ContainerBuilder
+		builderFactory: (options: { singletones: object }) => ContainerBuilder<any>
 	}) {
 		this.#types = types;
 		this.#singletones = singletones;
@@ -149,7 +149,7 @@ export class Container {
 	/**
 	 * Create an instance of ContainerBuilder for container extension
 	 */
-	builder(): ContainerBuilder {
+	builder(): ContainerBuilder<this> {
 		return this.#builderFactory({
 			singletones: this.#singletones
 		});

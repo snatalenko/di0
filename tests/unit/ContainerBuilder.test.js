@@ -17,6 +17,7 @@ describe('ContainerBuilder', () => {
 
 		it('creates instance of Container', () => {
 
+			/** @type {ContainerBuilder<ITestContainer>} */
 			const builder = new ContainerBuilder();
 			const container = builder.container();
 
@@ -39,6 +40,7 @@ describe('ContainerBuilder', () => {
 	describe('register', () => {
 
 		it('registers Type in DI container', () => {
+			/** @type {ContainerBuilder<ITestContainer>} */
 			const builder = new ContainerBuilder();
 			builder.register(X, 'x');
 			const container = builder.container();
@@ -48,6 +50,7 @@ describe('ContainerBuilder', () => {
 
 		it('registers factory in DI container', () => {
 
+			/** @type {ContainerBuilder<ITestContainer>} */
 			const builder = new ContainerBuilder();
 			builder.register(c => new X(), 'x');
 
@@ -74,7 +77,7 @@ describe('ContainerBuilder', () => {
 			const builder = new ContainerBuilder();
 
 			expect(() => {
-				builder.register({});
+				builder.register(/** @type {any} */ ({}));
 			}).to.throw(TypeError);
 		});
 

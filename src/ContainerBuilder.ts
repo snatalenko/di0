@@ -6,9 +6,9 @@ type TParameterObject = {
 	[key: string]: any
 };
 
-export class ContainerBuilder {
+export class ContainerBuilder<TContainerInterface extends Container = any> {
 
-	#types: TypeConfig<any>[];
+	#types: TypeConfig<any, TContainerInterface>[];
 	#singletones: {};
 
 	constructor({ types = [], singletones = {} }: {
@@ -22,8 +22,8 @@ export class ContainerBuilder {
 	/**
 	 * Register type or factory
 	 */
-	register<T>(Type: TClassOrFactory<T>, alias?: string): TypeConfig<T> {
-		const t = new TypeConfig<T>(Type);
+	register<T>(Type: TClassOrFactory<T>, alias?: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
+		const t = new TypeConfig<T, TContainerInterface>(Type);
 		if (alias)
 			t.as(alias);
 
@@ -35,8 +35,8 @@ export class ContainerBuilder {
 	 * Register instance
 	 * (which will be a singleton with an alias)
 	 */
-	registerInstance<T>(instance: T, alias: string): TypeConfig<T> {
-		const t = new TypeConfig<T>(() => instance)
+	registerInstance<T>(instance: T, alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
+		const t = new TypeConfig<T, TContainerInterface>(() => instance)
 			.asSingleInstance()
 			.as(alias);
 
@@ -47,7 +47,7 @@ export class ContainerBuilder {
 	/**
 	 * Create container with the registered types
 	 */
-	container(): Container {
+	container(): TContainerInterface {
 		const BuilderType = Object.getPrototypeOf(this).constructor;
 
 		return new Container({
@@ -57,6 +57,6 @@ export class ContainerBuilder {
 				types: this.#types.filter(t => t.aliases.length),
 				singletones
 			})
-		});
+		}) as TContainerInterface;
 	}
 }

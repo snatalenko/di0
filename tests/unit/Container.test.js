@@ -14,13 +14,14 @@ class Y {
 
 describe('Container', () => {
 
-	/** @type {ContainerBuilder} */
+	/** @type {ContainerBuilder<ITestContainer>} */
 	let builder;
 
-	/** @type {Container} */
+	/** @type {ITestContainer} */
 	let container;
 
 	beforeEach(() => {
+		/** @type {ContainerBuilder<ITestContainer>} */
 		builder = new ContainerBuilder();
 		builder.register(X, 'x');
 
@@ -228,5 +229,4 @@ describe('Container', () => {
 			expect(c.y === y).to.eq(false);
 		});
 	});
-
 });

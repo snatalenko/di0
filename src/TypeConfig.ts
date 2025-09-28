@@ -2,19 +2,19 @@ import { Container } from "./Container";
 import { TClassOrFactory } from "./TClassOrFactory";
 import { INSTANCE_PER_CONTAINER, INSTANCE_PER_DEPENDENCY, INSTANCE_SINGLE, TInstanceType } from "./TInstanceType";
 
-export class TypeConfig<T> {
+export class TypeConfig<T, TContainerInterface extends Container = any> {
 
 	/** Unique type configuration identifier */
-	id: symbol;
+	readonly id: symbol;
 
 	/** List of type aliases */
-	aliases: string[] = [];
+	readonly aliases: string[] = [];
 
 	/** How to instantiate the type */
 	instanceType: TInstanceType = INSTANCE_PER_CONTAINER;
 
 	/** Type instance factory */
-	factory: (container: Container) => T;
+	readonly factory: (container: TContainerInterface) => T;
 
 	/**
 	 * Creates an instance of TypeConfig<T>
@@ -33,7 +33,7 @@ export class TypeConfig<T> {
 	 * Instruct to expose object instance on container instance with a given `alias`.
 	 * The alias will be used to inject object instance as dependency to other types.
 	 */
-	as(alias: string): TypeConfig<T> {
+	as(alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
 		if (typeof alias !== 'string' || !alias.length)
 			throw new TypeError('Alias argument must be a non-empty String');
 		if (this.aliases.includes(alias))
@@ -55,7 +55,7 @@ export class TypeConfig<T> {
 	 * Instruct to create object instances once per containers tree
 	 * (current container and derived containers)
 	 */
-	asSingleInstance(): TypeConfig<T> {
+	asSingleInstance(): TypeConfig<T, TContainerInterface> {
 		this.instanceType = INSTANCE_SINGLE;
 		return this;
 	}
@@ -63,7 +63,7 @@ export class TypeConfig<T> {
 	/**
 	 * Create instance per each dependency
 	 */
-	asInstancePerDependency(): TypeConfig<T> {
+	asInstancePerDependency(): TypeConfig<T, TContainerInterface> {
 		this.instanceType = INSTANCE_PER_DEPENDENCY;
 		return this;
 	}
@@ -71,7 +71,7 @@ export class TypeConfig<T> {
 	/**
 	 * Create instance per container (default behavior)
 	 */
-	asInstancePerContainer(): TypeConfig<T> {
+	asInstancePerContainer(): TypeConfig<T, TContainerInterface> {
 		this.instanceType = INSTANCE_PER_CONTAINER;
 		return this;
 	}
