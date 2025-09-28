@@ -19,6 +19,7 @@
     "pretest": "npm run build",
     "test": "mocha tests/unit/",
     "changelog": "conventional-changelog -n ./scripts/changelog -i CHANGELOG.md -s",
+    "cleanup": "tsc --build --clean",
     "build": "tsc",
     "prepare": "npm run build",
     "preversion": "npm test",
