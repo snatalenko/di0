@@ -35,10 +35,10 @@
   "author": "@snatalenko",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^4.3.6",
+    "chai": "^6.2.0",
     "conventional-changelog": "^3.1.25",
     "coveralls": "^3.1.1",
-    "mocha": "^9.2.0",
+    "mocha": "^11.7.2",
     "nyc": "^15.1.0",
     "typescript": "^5.9.2"
   }
