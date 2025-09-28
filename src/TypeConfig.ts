@@ -42,7 +42,8 @@ export class TypeConfig<T, TContainerInterface extends Container = any> {
 		const forbiddenAliases = [
 			Container.prototype.get.name,
 			Container.prototype.getAll.name,
-			Container.prototype.createInstance.name
+			Container.prototype.createInstance.name,
+			Container.prototype.has.name
 		];
 		if (forbiddenAliases.includes(alias))
 			throw new TypeError(`Alias "${alias}" conflicts with container method`);

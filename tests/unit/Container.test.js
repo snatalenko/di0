@@ -144,6 +144,44 @@ describe('Container', () => {
 		});
 	});
 
+	describe('has', () => {
+
+		it('returns true when alias is registered', () => {
+			expect(container.has('x')).to.eq(true);
+		});
+
+		it('returns false when alias is not registered', () => {
+			expect(container.has('missing')).to.eq(false);
+		});
+
+		it('accepts type identifiers', () => {
+			const config = builder.register(() => ({}));
+			container = builder.container();
+
+			expect(container.has(config.id)).to.eq(true);
+		});
+
+		it('does not instantiate services', () => {
+			let instantiated = false;
+			builder.register(() => {
+				instantiated = true;
+			}, 'foo');
+			container = builder.container();
+
+			expect(container.has('foo')).to.eq(true);
+			expect(instantiated).to.eq(false);
+
+			container.get('foo');
+			expect(instantiated).to.eq(true);
+		});
+
+		it('throws when alias argument is missing', () => {
+			expect(() => {
+				container.has();
+			}).to.throw(TypeError, 'alias argument required');
+		});
+	});
+
 	describe('getAll', () => {
 
 		it('returns all services registered with a given alias', () => {

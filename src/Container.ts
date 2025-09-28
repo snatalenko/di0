@@ -58,7 +58,7 @@ export class Container {
 
 		// bind container methods to container
 		// to allow their usage in dependent constructors and factories
-		const methodsToBind = [this.get, this.getAll, this.createInstance];
+		const methodsToBind = [this.get, this.getAll, this.createInstance, this.has];
 		for (const method of methodsToBind) {
 			Object.defineProperty(this, method.name, {
 				value: method.bind(this),
@@ -116,6 +116,16 @@ export class Container {
 			this.#instances[id] = instance;
 
 		return instance;
+	}
+
+	/**
+	 * Check whether the container has a type registered for the given alias
+	 */
+	has(alias: string | Symbol): boolean {
+		if (!alias)
+			throw new TypeError('alias argument required');
+
+		return this.#types.some(t => t.id === alias || typeof alias === 'string' && t.aliases.includes(alias));
 	}
 
 	/**
