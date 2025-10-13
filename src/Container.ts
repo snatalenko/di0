@@ -8,12 +8,13 @@ type TParameterObject = {
 	[key: string]: any
 };
 
-function isClass(func: TClassOrFactory<any>): boolean {
+function isClass<T, C>(func: TClassOrFactory<T, C>):
+	func is TClassConstructor<T> {
 	return typeof func === 'function'
 		&& Function.prototype.toString.call(func).startsWith('class');
 }
 
-function extendContainer(container: Container, additionalParameters: TParameterObject): Container {
+function extendContainer<T>(container: T, additionalParameters: TParameterObject): T {
 	if (!container)
 		throw new TypeError('container argument required');
 	if (typeof additionalParameters !== 'object' || !additionalParameters)
@@ -142,18 +143,22 @@ export class Container {
 		return types.map(({ id }) => this.get(id));
 	}
 
+	createInstance<T>(Type: TClassConstructor<T>, additionalParams?: TParameterObject): T;
+	createInstance<T>(factory: TFactory<T, this>, additionalParams?: TParameterObject): T;
+	createInstance<T>(Type: TClassOrFactory<T, this>, additionalParams?: TParameterObject): T;
+
 	/**
 	 * Create instance of a given type
 	 */
-	createInstance<T>(Type: TClassOrFactory<T>, additionalParams?: TParameterObject): T {
+	createInstance<T>(Type: TClassOrFactory<T, this>, additionalParams?: TParameterObject): T {
 		const arg = additionalParams ?
 			extendContainer(this, additionalParams) :
 			this;
 
 		if (isClass(Type))
-			return new (Type as TClassConstructor<T>)(arg);
+			return new Type(arg);
 
-		return (Type as TFactory<T>)(arg);
+		return Type(arg);
 	}
 
 	/**

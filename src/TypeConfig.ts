@@ -2,7 +2,7 @@ import { Container } from "./Container";
 import { TClassOrFactory } from "./TClassOrFactory";
 import { INSTANCE_PER_CONTAINER, INSTANCE_PER_DEPENDENCY, INSTANCE_SINGLE, TInstanceType } from "./TInstanceType";
 
-export class TypeConfig<T, TContainerInterface extends Container = any> {
+export class TypeConfig<T, TContainerInterface = any> {
 
 	/** Unique type configuration identifier */
 	readonly id: symbol;
@@ -14,12 +14,12 @@ export class TypeConfig<T, TContainerInterface extends Container = any> {
 	instanceType: TInstanceType = INSTANCE_PER_CONTAINER;
 
 	/** Type instance factory */
-	readonly factory: (container: TContainerInterface) => T;
+	readonly factory: (container: TContainerInterface & Container) => T;
 
 	/**
 	 * Creates an instance of TypeConfig<T>
 	 */
-	constructor(Type: TClassOrFactory<T>) {
+	constructor(Type: TClassOrFactory<T, TContainerInterface>) {
 		if (typeof Type !== 'function')
 			throw new TypeError('Type argument must be a Function');
 		if (Type.length > 1)
