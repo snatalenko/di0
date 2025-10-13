@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/snatalenko/di0/compare/v1.1.0...v1.2.0) (2025-10-13)
+
+
+### Changes
+
+* Enhance type safety in Container and ContainerBuilder with generics ([4f0d3b9](https://github.com/snatalenko/di0/commit/4f0d3b99c9c38dae885a4b886fc484c0d1ebb3fc))
+
+
 # [1.1.0](https://github.com/snatalenko/di0/compare/v1.0.0...v1.1.0) (2025-09-28)
 
 
