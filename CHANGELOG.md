@@ -1,3 +1,27 @@
+# [1.3.0-0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0-0) (2026-02-20)
+
+
+### Features
+
+* `addResolver` for automatic wiring later registered types ([cf9dfff](https://github.com/snatalenko/di0/commit/cf9dfff48acb72799a9021e0e283a7dbc311810d))
+* `asOneOf` method for registering multiple types under the same alias ([1fede25](https://github.com/snatalenko/di0/commit/1fede25bf63489adbfe37306c3e44241123abcf9))
+
+### Documentation
+
+* Remove gotchas section from CONTRIBUTING.md ([5e95203](https://github.com/snatalenko/di0/commit/5e952032ca3085e142f03f373e9748c91023646f))
+* Update README.md, add CONTRIBUTING.md, change license to Apache-2.0 ([55536dc](https://github.com/snatalenko/di0/commit/55536dc261b3a4f979ac15329c878f6a63117201))
+
+### Tests
+
+* Use Jest instead of Mocha and Nyc ([dba8c6a](https://github.com/snatalenko/di0/commit/dba8c6a8d431c63442a61d73c607bfa135322984))
+
+### Build System
+
+* Cleanup obsolete tags on new version creation ([b9f2382](https://github.com/snatalenko/di0/commit/b9f2382694e08a82f46d53b0e8f31b9e538c1f9b))
+* Add GitHub Actions workflow for publishing to NPM ([c39aaa3](https://github.com/snatalenko/di0/commit/c39aaa382eff49a2e092e5fa15dbecf163bf825b))
+* Add audit, tests, and coveralls build actions ([f33baa2](https://github.com/snatalenko/di0/commit/f33baa23e40ae7fcf083895603cb1a5671809349))
+
+
 # [1.2.0](https://github.com/snatalenko/di0/compare/v1.1.0...v1.2.0) (2025-10-13)
 
 
