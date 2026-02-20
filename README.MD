@@ -1,4 +1,4 @@
-# di0 — Dependency Injection for ES6+
+# di0 — Dependency Injection for TS/ES6+
 
 [![Version](https://img.shields.io/npm/v/di0.svg)](https://www.npmjs.com/package/di0)
 [![Downloads](https://img.shields.io/npm/dm/di0.svg)](https://www.npmjs.com/package/di0)
