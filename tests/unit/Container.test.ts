@@ -1,12 +1,23 @@
-'use strict';
+import { ContainerBuilder, Container } from '../../src';
 
-const { ContainerBuilder, Container } = require('../..');
-const { expect } = require('chai');
+interface ITestContainer extends Container {
+	x: X;
+	y?: Y;
+	a?: any;
+	b?: any;
+	c?: any;
+	numbers?: any;
+	foo?: any;
+	logger?: any;
+}
 
-class X { }
+class X {}
 
 class Y {
-	constructor({ x, z }) {
+	_x: X;
+	_z: unknown;
+
+	constructor({ x, z }: { x: X; z?: unknown }) {
 		this._x = x;
 		this._z = z;
 	}
@@ -14,17 +25,12 @@ class Y {
 
 describe('Container', () => {
 
-	/** @type {ContainerBuilder<ITestContainer>} */
-	let builder;
-
-	/** @type {ITestContainer} */
-	let container;
+	let builder: ContainerBuilder<ITestContainer>;
+	let container: ITestContainer;
 
 	beforeEach(() => {
-		/** @type {ContainerBuilder<ITestContainer>} */
 		builder = new ContainerBuilder();
 		builder.register(X, 'x');
-
 		container = builder.container();
 	});
 
@@ -32,18 +38,18 @@ describe('Container', () => {
 
 		it('creates instance of a given type', () => {
 			const y = container.createInstance(Y);
-			expect(y).to.be.instanceOf(Y);
+			expect(y).toBeInstanceOf(Y);
 		});
 
 		it('injects dependencies', () => {
 			const y = container.createInstance(Y);
-			expect(y).to.have.property('_x').that.is.instanceOf(X);
+			expect(y._x).toBeInstanceOf(X);
 		});
 
 		it('injects additional parameters', () => {
 			const y = container.createInstance(Y, { z: 'test' });
-			expect(y).to.have.property('_x').that.is.instanceOf(X);
-			expect(y).to.have.property('_z', 'test');
+			expect(y._x).toBeInstanceOf(X);
+			expect(y._z).toBe('test');
 		});
 
 		it('initializes dependencies only when they are needed', () => {
@@ -53,20 +59,24 @@ describe('Container', () => {
 			}, 'foo');
 			container = builder.container();
 
-			expect('foo' in container).to.eq(true);
-			expect(fooCreated).to.eq(false);
+			expect('foo' in container).toBe(true);
+			expect(fooCreated).toBe(false);
 
 			container.createInstance(Y);
-			expect(fooCreated).to.eq(false);
+			expect(fooCreated).toBe(false);
 
-			container.createInstance(({ foo }) => foo);
-			expect(fooCreated).to.eq(true);
+			container.createInstance(({ foo }: ITestContainer) => foo);
+			expect(fooCreated).toBe(true);
 		});
 
 		it('injects container methods', () => {
 
 			class Z {
-				constructor({ get, getAll, createInstance }) {
+				x: object;
+				xx: object[];
+				xi: X;
+
+				constructor({ get, getAll, createInstance }: ITestContainer) {
 					this.x = get('x');
 					this.xx = getAll('x');
 					this.xi = createInstance(X);
@@ -74,9 +84,9 @@ describe('Container', () => {
 			}
 
 			const z = container.createInstance(Z);
-			expect(z).to.have.property('x').that.is.instanceOf(X);
-			expect(z).to.have.property('xx').that.eqls([z.x]);
-			expect(z).to.have.property('xi').that.is.instanceOf(X);
+			expect(z.x).toBeInstanceOf(X);
+			expect(z.xx).toEqual([z.x]);
+			expect(z.xi).toBeInstanceOf(X);
 		});
 	});
 
@@ -86,50 +96,49 @@ describe('Container', () => {
 
 			const b2 = container.builder();
 			b2.register(Y, 'y');
-			expect(b2).to.be.instanceOf(ContainerBuilder);
+			expect(b2).toBeInstanceOf(ContainerBuilder);
 
 			const c2 = b2.container();
-			expect(c2).to.have.property('x').that.is.instanceOf(X);
-			expect(c2).to.have.property('y').that.is.instanceOf(Y);
+			expect(c2.x).toBeInstanceOf(X);
+			expect(c2.y).toBeInstanceOf(Y);
 
-			expect(container).to.have.property('x').that.is.instanceOf(X);
-			expect(container).to.not.have.property('y');
+			expect(container.x).toBeInstanceOf(X);
+			expect(container).not.toHaveProperty('y');
 		});
 	});
 
 	describe('get', () => {
 
 		it('returns instance by alias', () => {
-
-			expect(container.get('x')).to.be.instanceOf(X);
+			expect(container.get('x')).toBeInstanceOf(X);
 		});
 
 		it('returns instance of a latest registered type with a given alias', () => {
 
-			builder.register(() => 'foo').as('x');
+			builder.register(() => 'foo' as any).as('x');
 			container = builder.container();
 
-			expect(container.get('x')).to.eq('foo');
+			expect(container.get('x')).toBe('foo');
 		});
 
 		it('detects circular dependencies', () => {
 
-			builder.register(({ a }) => null, 'c');
-			builder.register(({ b }) => null, 'a');
-			builder.register(({ c }) => null, 'b');
+			builder.register(({ a }: ITestContainer) => null as any, 'c');
+			builder.register(({ b }: ITestContainer) => null as any, 'a');
+			builder.register(({ c }: ITestContainer) => null as any, 'b');
 			container = builder.container();
 
 			expect(() => {
 				container.get('a');
-			}).to.throw('Circular dependency detected: a.b.c.a');
+			}).toThrow('Circular dependency detected: a.b.c.a');
 		});
 
 		it('logs instance creations when logger is registered', () => {
 
-			const logs = [];
+			const logs: any[][] = [];
 			builder.register(Y, 'y');
 			builder.register(() => ({
-				log(...args) {
+				log(...args: any[]) {
 					logs.push(args);
 				}
 			}), 'logger');
@@ -137,7 +146,7 @@ describe('Container', () => {
 			container = builder.container();
 			container.get('y');
 
-			expect(logs).to.eql([
+			expect(logs).toEqual([
 				['silly', 'y.x instance created'],
 				['silly', 'y instance created']
 			]);
@@ -147,18 +156,18 @@ describe('Container', () => {
 	describe('has', () => {
 
 		it('returns true when alias is registered', () => {
-			expect(container.has('x')).to.eq(true);
+			expect(container.has('x')).toBe(true);
 		});
 
 		it('returns false when alias is not registered', () => {
-			expect(container.has('missing')).to.eq(false);
+			expect(container.has('missing')).toBe(false);
 		});
 
 		it('accepts type identifiers', () => {
 			const config = builder.register(() => ({}));
 			container = builder.container();
 
-			expect(container.has(config.id)).to.eq(true);
+			expect(container.has(config.id)).toBe(true);
 		});
 
 		it('does not instantiate services', () => {
@@ -168,17 +177,17 @@ describe('Container', () => {
 			}, 'foo');
 			container = builder.container();
 
-			expect(container.has('foo')).to.eq(true);
-			expect(instantiated).to.eq(false);
+			expect(container.has('foo')).toBe(true);
+			expect(instantiated).toBe(false);
 
 			container.get('foo');
-			expect(instantiated).to.eq(true);
+			expect(instantiated).toBe(true);
 		});
 
 		it('throws when alias argument is missing', () => {
 			expect(() => {
-				container.has();
-			}).to.throw(TypeError, 'alias argument required');
+				container.has(undefined as any);
+			}).toThrow('alias argument required');
 		});
 	});
 
@@ -186,25 +195,26 @@ describe('Container', () => {
 
 		it('returns all services registered with a given alias', () => {
 
-			builder.register(() => 1).as('numbers');
-			builder.register(() => 2).as('numbers');
+			builder.register(() => 1 as any).as('numbers');
+			builder.register(() => 2 as any).as('numbers');
 
 			const c = builder.container();
 			const numbers = c.getAll('numbers');
 
-			expect(numbers).to.eql([1, 2]);
+			expect(numbers).toEqual([1, 2]);
 		});
 	});
 
 	describe('[alias: string]', () => {
+
 		it('exposes registered type instances as properties', () => {
-			expect(container.x).to.be.instanceOf(X);
+			expect(container.x).toBeInstanceOf(X);
 		});
 
 		it('does not allow property modifications', () => {
 			expect(() => {
-				container.x = {};
-			}).to.throw(TypeError);
+				(container as any).x = {};
+			}).toThrow(TypeError);
 		});
 	});
 
@@ -213,8 +223,7 @@ describe('Container', () => {
 		it('caches created instance within container', () => {
 
 			const x = container.x;
-
-			expect(container.x === x).to.eq(true);
+			expect(container.x === x).toBe(true);
 		});
 
 		it('does not pass instance to derived containers', () => {
@@ -222,7 +231,7 @@ describe('Container', () => {
 			const derivedBuilder = container.builder();
 			const derivedContainer = derivedBuilder.container();
 
-			expect(container.x === derivedContainer.x).to.eq(false);
+			expect(container.x === derivedContainer.x).toBe(false);
 		});
 	});
 
@@ -236,11 +245,11 @@ describe('Container', () => {
 			const derivedBuilder = parentContainer.builder();
 			const derivedContainer = derivedBuilder.container();
 
-			expect(parentContainer).to.have.property('x').that.is.instanceOf(X);
-			expect(derivedContainer).to.have.property('x').that.does.not.eq(parentContainer.x);
+			expect(parentContainer.x).toBeInstanceOf(X);
+			expect(derivedContainer.x).not.toBe(parentContainer.x);
 
-			expect(parentContainer).to.have.property('y').that.is.instanceOf(Y);
-			expect(derivedContainer).to.have.property('y').that.eq(parentContainer.y);
+			expect(parentContainer.y).toBeInstanceOf(Y);
+			expect(derivedContainer.y).toBe(parentContainer.y);
 		});
 
 		it('passes created singleton instances to parent container', () => {
@@ -251,7 +260,7 @@ describe('Container', () => {
 			const derivedBuilder = parentContainer.builder();
 			const derivedContainer = derivedBuilder.container();
 
-			expect(derivedContainer).to.have.property('y').that.eq(parentContainer.y);
+			expect(derivedContainer.y).toBe(parentContainer.y);
 		});
 	});
 
@@ -264,7 +273,7 @@ describe('Container', () => {
 			const c = builder.container();
 			const y = c.y;
 
-			expect(c.y === y).to.eq(false);
+			expect(c.y === y).toBe(false);
 		});
 	});
 });

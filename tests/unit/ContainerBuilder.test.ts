@@ -1,12 +1,15 @@
-'use strict';
+import { ContainerBuilder, Container } from '../../src';
 
-const { ContainerBuilder, Container } = require('../..');
-const { expect } = require('chai');
+interface IBuilderTestContainer extends Container {
+	x?: X;
+}
 
-class X { }
+class X {}
 
 class Y {
-	constructor({ x }) {
+	_x: X;
+
+	constructor({ x }: { x: X }) {
 		this._x = x;
 	}
 }
@@ -17,49 +20,45 @@ describe('ContainerBuilder', () => {
 
 		it('creates instance of Container', () => {
 
-			/** @type {ContainerBuilder<ITestContainer>} */
 			const builder = new ContainerBuilder();
 			const container = builder.container();
 
-			expect(container).to.be.instanceOf(Container);
+			expect(container).toBeInstanceOf(Container);
 		});
 
 		it('allows container builder extension', () => {
 
-			class ExtendedBuilder extends ContainerBuilder {
-			}
+			class ExtendedBuilder extends ContainerBuilder {}
 
 			const builder = new ExtendedBuilder();
 			const container = builder.container();
 			const derivedBuilder = container.builder();
 
-			expect(derivedBuilder).to.be.instanceOf(ExtendedBuilder);
+			expect(derivedBuilder).toBeInstanceOf(ExtendedBuilder);
 		});
 	});
 
 	describe('register', () => {
 
 		it('registers Type in DI container', () => {
-			/** @type {ContainerBuilder<ITestContainer>} */
-			const builder = new ContainerBuilder();
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
 			builder.register(X, 'x');
 			const container = builder.container();
 
-			expect(container.x).to.be.instanceOf(X);
+			expect(container.x).toBeInstanceOf(X);
 		});
 
 		it('registers factory in DI container', () => {
 
-			/** @type {ContainerBuilder<ITestContainer>} */
-			const builder = new ContainerBuilder();
-			builder.register(c => new X(), 'x');
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			builder.register(() => new X(), 'x');
 
 			const container = builder.container();
 
-			expect(container.x).to.be.instanceOf(X);
+			expect(container.x).toBeInstanceOf(X);
 		});
 
-		it('registers types w\\o names and instantiates them on container creation', () => {
+		it('registers types without names and instantiates them on container creation', () => {
 
 			let counter = 0;
 			const builder = new ContainerBuilder();
@@ -68,48 +67,46 @@ describe('ContainerBuilder', () => {
 				return {};
 			});
 
-			expect(counter).to.eq(0);
-			const container = builder.container();
-			expect(counter).to.eq(1);
+			expect(counter).toBe(0);
+			builder.container();
+			expect(counter).toBe(1);
 		});
 
 		it('fails if non-function passed as an argument', () => {
 			const builder = new ContainerBuilder();
 
 			expect(() => {
-				builder.register(/** @type {any} */ ({}));
-			}).to.throw(TypeError);
+				builder.register({} as any);
+			}).toThrow(TypeError);
 		});
 
 		it('fails if Type constructor has multiple arguments', () => {
 			const builder = new ContainerBuilder();
 
 			class Z {
-				constructor(x, y) {
-				}
+				constructor(_x: unknown, _y: unknown) {}
 			}
 
 			expect(() => {
-				builder.register(Z);
-			}).to.throw(TypeError);
+				builder.register(Z as any);
+			}).toThrow(TypeError);
 		});
 
 		it('fails if factory has multiple arguments', () => {
 			const builder = new ContainerBuilder();
 
-			const zFact = (a, b) => ({});
+			const zFact = (_a: unknown, _b: unknown) => ({});
 
 			expect(() => {
-				builder.register(zFact);
-			}).to.throw(TypeError);
+				builder.register(zFact as any);
+			}).toThrow(TypeError);
 		});
 
 		it('fails if alias conflicts with container methods', () => {
 			const builder = new ContainerBuilder();
 			expect(() => {
-				builder.register(c => new X(), 'get');
-			}).to.throw(TypeError);
+				builder.register(() => new X(), 'get' as any);
+			}).toThrow(TypeError);
 		});
 	});
 });
-
