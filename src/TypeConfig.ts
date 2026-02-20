@@ -1,20 +1,12 @@
-import { Container } from "./Container";
-import { TClassOrFactory } from "./TClassOrFactory";
-import { INSTANCE_PER_CONTAINER, INSTANCE_PER_DEPENDENCY, INSTANCE_SINGLE, TInstanceType } from "./TInstanceType";
-
-const FORBIDDEN_ALIASES = [
-	Container.prototype.get.name,
-	Container.prototype.getAll.name,
-	Container.prototype.createInstance.name,
-	Container.prototype.has.name
-];
-
-function validateAlias(alias: unknown): asserts alias is string {
-	if (typeof alias !== 'string' || !alias.length)
-		throw new TypeError('Alias argument must be a non-empty String');
-	if (FORBIDDEN_ALIASES.includes(alias))
-		throw new TypeError(`Alias "${alias}" conflicts with container method`);
-}
+import type { ClassOrFactory } from "./ClassOrFactory";
+import {
+	INSTANCE_PER_CONTAINER,
+	INSTANCE_PER_DEPENDENCY,
+	INSTANCE_SINGLE,
+	type LifetimeMode
+} from "./LifetimeMode";
+import type { Container } from "./Container";
+import { validateAlias } from "./validateAlias";
 
 export class TypeConfig<T, TContainerInterface = any> {
 
@@ -28,7 +20,7 @@ export class TypeConfig<T, TContainerInterface = any> {
 	readonly collectionAliases: Set<string> = new Set();
 
 	/** How to instantiate the type */
-	instanceType: TInstanceType = INSTANCE_PER_CONTAINER;
+	instanceType: LifetimeMode = INSTANCE_PER_CONTAINER;
 
 	/** Type instance factory */
 	readonly factory: (container: TContainerInterface & Container) => T;
@@ -36,7 +28,7 @@ export class TypeConfig<T, TContainerInterface = any> {
 	/**
 	 * Creates an instance of TypeConfig<T>
 	 */
-	constructor(Type: TClassOrFactory<T, TContainerInterface>) {
+	constructor(Type: ClassOrFactory<T, TContainerInterface>) {
 		if (typeof Type !== 'function')
 			throw new TypeError('Type argument must be a Function');
 		if (Type.length > 1)

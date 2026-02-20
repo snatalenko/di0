@@ -78,6 +78,22 @@ container.engines; // [GasEngine instance, ElectricEngine instance]
 
 Works with all instance lifetimes and container inheritance — child containers include parent registrations.
 
+## Auto-wiring (`addResolver`)
+
+Register a predicate to automatically wire unaliased types to an alias. The predicate receives an instance; exactly one type must match — multiple matches throw.
+
+```js
+builder.addResolver(i => i instanceof Engine, 'engine');
+builder.addResolver(i => 'wheels' in i, 'car');
+
+builder.register(Engine);
+builder.register(Car); // Car: constructor({ engine }) { ... }
+
+const { car, engine } = builder.container();
+```
+
+Registration order does not matter. Singleton resolver-matched instances propagate to derived containers.
+
 ## Container Inheritance
 
 Derive a child container that shares singletons with its parent:

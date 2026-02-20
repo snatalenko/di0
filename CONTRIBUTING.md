@@ -33,7 +33,7 @@ Source is TypeScript in `src/`, compiled to `dist/` (the published `main`). Test
 
 ### Instance lifetime internals
 
-Lifetimes are stored as a `TInstanceType` string on `TypeConfig`:
+Lifetimes are stored as a `LifetimeMode` string on `TypeConfig`:
 
 - `INSTANCE_PER_CONTAINER` (default) — cached in `Container#instances`, scoped to the current container.
 - `INSTANCE_SINGLE` — cached in the `singletons` object, which is passed through `builderFactory` and shared across the container tree.
@@ -46,6 +46,8 @@ Lifetimes are stored as a `TInstanceType` string on `TypeConfig`:
 - the shared `singletons` map.
 
 Registering additional types on the derived builder and calling `.container()` creates a child container that sees both parent and new services.
+
+When resolver auto-wiring is enabled (`builder.addResolver(...)`), the derived builder also receives unaliased registrations so resolver predicates can scan and expose them in derived containers.
 
 ## Conventions & Gotchas
 

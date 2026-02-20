@@ -1,5 +1,5 @@
 export * from './Container';
 export * from './ContainerBuilder';
-export * from './TClassOrFactory';
-export * from './TInstanceType';
+export * from './ClassOrFactory';
+export * from './LifetimeMode';
 export * from './TypeConfig';
