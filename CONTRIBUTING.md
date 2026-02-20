@@ -48,10 +48,3 @@ Lifetimes are stored as a `LifetimeMode` string on `TypeConfig`:
 Registering additional types on the derived builder and calling `.container()` creates a child container that sees both parent and new services.
 
 When resolver auto-wiring is enabled (`builder.addResolver(...)`), the derived builder also receives unaliased registrations so resolver predicates can scan and expose them in derived containers.
-
-## Conventions & Gotchas
-
-- Always edit `src/` — `dist/` is compiled output published to npm.
-- The `singletons` spelling (not "singletons") is intentional throughout the codebase — do not rename.
-- Aliases must not clash with `Container` method names (`get`, `getAll`, `createInstance`, `has`); this is enforced in `TypeConfig.as()`.
-- `Container` binds its own methods in the constructor so they can be destructured inside user constructors/factories — account for this when adding new public methods.
