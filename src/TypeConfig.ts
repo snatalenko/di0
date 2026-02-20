@@ -2,6 +2,20 @@ import { Container } from "./Container";
 import { TClassOrFactory } from "./TClassOrFactory";
 import { INSTANCE_PER_CONTAINER, INSTANCE_PER_DEPENDENCY, INSTANCE_SINGLE, TInstanceType } from "./TInstanceType";
 
+const FORBIDDEN_ALIASES = [
+	Container.prototype.get.name,
+	Container.prototype.getAll.name,
+	Container.prototype.createInstance.name,
+	Container.prototype.has.name
+];
+
+function validateAlias(alias: unknown): asserts alias is string {
+	if (typeof alias !== 'string' || !alias.length)
+		throw new TypeError('Alias argument must be a non-empty String');
+	if (FORBIDDEN_ALIASES.includes(alias))
+		throw new TypeError(`Alias "${alias}" conflicts with container method`);
+}
+
 export class TypeConfig<T, TContainerInterface = any> {
 
 	/** Unique type configuration identifier */
@@ -9,6 +23,9 @@ export class TypeConfig<T, TContainerInterface = any> {
 
 	/** List of type aliases */
 	readonly aliases: string[] = [];
+
+	/** Aliases for which the container property should return an array of all instances */
+	readonly collectionAliases: Set<string> = new Set();
 
 	/** How to instantiate the type */
 	instanceType: TInstanceType = INSTANCE_PER_CONTAINER;
@@ -34,21 +51,26 @@ export class TypeConfig<T, TContainerInterface = any> {
 	 * The alias will be used to inject object instance as dependency to other types.
 	 */
 	as(alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
-		if (typeof alias !== 'string' || !alias.length)
-			throw new TypeError('Alias argument must be a non-empty String');
-		if (this.aliases.includes(alias))
+		validateAlias(alias);
+
+		if (this.aliases.includes(alias as string))
 			throw new TypeError(`Alias "${alias}" is already registered for the type`);
 
-		const forbiddenAliases = [
-			Container.prototype.get.name,
-			Container.prototype.getAll.name,
-			Container.prototype.createInstance.name,
-			Container.prototype.has.name
-		];
-		if (forbiddenAliases.includes(alias))
-			throw new TypeError(`Alias "${alias}" conflicts with container method`);
+		this.aliases.push(alias as string);
+		return this;
+	}
 
-		this.aliases.push(alias);
+	/**
+	 * Instruct to expose object instance on container as one element of an array under the given `alias`.
+	 * Multiple registrations with the same alias accumulate into the array.
+	 */
+	asOneOf(alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
+		validateAlias(alias);
+
+		if (!this.aliases.includes(alias as string))
+			this.aliases.push(alias as string);
+
+		this.collectionAliases.add(alias as string);
 		return this;
 	}
 

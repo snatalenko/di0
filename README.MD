@@ -64,6 +64,20 @@ container.has('engine');                   // check without instantiating
 container.createInstance(Car, { extra });  // instantiate with extra deps
 ```
 
+## Collections (`asOneOf`)
+
+Register multiple types under the same alias to expose them as an array:
+
+```js
+builder.register(GasEngine).asOneOf('engines');
+builder.register(ElectricEngine).asOneOf('engines');
+
+const container = builder.container();
+container.engines; // [GasEngine instance, ElectricEngine instance]
+```
+
+Works with all instance lifetimes and container inheritance — child containers include parent registrations.
+
 ## Container Inheritance
 
 Derive a child container that shares singletons with its parent:

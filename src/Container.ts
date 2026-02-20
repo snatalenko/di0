@@ -47,10 +47,27 @@ export class Container {
 		this.#singletons = singletons;
 		this.#builderFactory = builderFactory;
 
+		const singleAliases = new Set<string>();
+		const collectionAliases = new Set<string>();
+		for (const { aliases, collectionAliases: ca } of this.#types) {
+			for (const alias of aliases) {
+				if (ca.has(alias))
+					collectionAliases.add(alias);
+				else
+					singleAliases.add(alias);
+			}
+		}
+		for (const alias of collectionAliases) {
+			if (singleAliases.has(alias))
+				throw new TypeError(`Alias "${alias}" is registered with both .as() and .asOneOf() — use one or the other`);
+		}
+
 		for (const { aliases } of this.#types) {
 			for (const alias of aliases) {
 				Object.defineProperty(this, alias, {
-					get: () => this.get(alias),
+					get: collectionAliases.has(alias)
+						? () => this.getAll(alias)
+						: () => this.get(alias),
 					configurable: true,
 					enumerable: true
 				});

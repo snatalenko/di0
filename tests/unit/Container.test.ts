@@ -7,6 +7,7 @@ interface ITestContainer extends Container {
 	b?: any;
 	c?: any;
 	numbers?: any;
+	engines?: any[];
 	foo?: any;
 	logger?: any;
 }
@@ -274,6 +275,85 @@ describe('Container', () => {
 			const y = c.y;
 
 			expect(c.y === y).toBe(false);
+		});
+	});
+
+	describe('asOneOf', () => {
+
+		it('produces an array with a single element for one registration', () => {
+
+			builder.register(X).asOneOf('engines');
+			const c = builder.container();
+
+			expect(c.engines).toEqual([expect.any(X)]);
+		});
+
+		it('accumulates multiple registrations into an array', () => {
+
+			builder.register(X).asOneOf('engines');
+			builder.register(X).asOneOf('engines');
+			const c = builder.container();
+
+			expect(c.engines).toHaveLength(2);
+			expect(c.engines![0]).toBeInstanceOf(X);
+			expect(c.engines![1]).toBeInstanceOf(X);
+		});
+
+		it('returns a fresh array on each access when asInstancePerDependency', () => {
+
+			builder.register(X).asOneOf('engines').asInstancePerDependency();
+			const c = builder.container();
+
+			const first = c.engines![0];
+			const second = c.engines![0];
+			expect(first).not.toBe(second);
+		});
+
+		it('returns the same instances on each access with default lifetime', () => {
+
+			builder.register(X).asOneOf('engines');
+			const c = builder.container();
+
+			expect(c.engines![0]).toBe(c.engines![0]);
+		});
+
+		it('shares singleton instances with derived containers', () => {
+
+			builder.register(X).asOneOf('engines').asSingleInstance();
+			const parent = builder.container();
+			const child = parent.builder().container();
+
+			expect((parent.engines as X[])[0]).toBe((child.engines as X[])[0]);
+		});
+
+		it('has() returns true for collection alias', () => {
+
+			builder.register(X).asOneOf('engines');
+			const c = builder.container();
+
+			expect(c.has('engines')).toBe(true);
+		});
+
+		it('child container includes parent and own registrations', () => {
+
+			builder.register(X).asOneOf('engines');
+			const parent = builder.container();
+
+			const childBuilder = parent.builder();
+			childBuilder.register(X).asOneOf('engines');
+			const child = childBuilder.container();
+
+			expect(child.engines).toHaveLength(2);
+		});
+
+		it('throws when the same alias is used with both .as() and .asOneOf()', () => {
+
+			builder.register(X).as('engines' as any);
+			builder.register(X).asOneOf('engines');
+
+			expect(() => builder.container()).toThrow(
+				'Alias "engines" is registered with both .as() and .asOneOf() — use one or the other'
+			);
 		});
 	});
 });
