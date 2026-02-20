@@ -32,7 +32,7 @@
     "es6"
   ],
   "author": "@snatalenko",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "conventional-changelog": "^3.1.25",
