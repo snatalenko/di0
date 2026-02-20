@@ -9,14 +9,14 @@ type TParameterObject = {
 export class ContainerBuilder<TContainerInterface = any> {
 
 	#types: TypeConfig<any, TContainerInterface>[];
-	#singletones: {};
+	#singletons: {};
 
-	constructor({ types = [], singletones = {} }: {
+	constructor({ types = [], singletons = {} }: {
 		types?: Readonly<TypeConfig<any>[]>,
-		singletones?: TParameterObject
+		singletons?: TParameterObject
 	} = {}) {
 		this.#types = [...types];
-		this.#singletones = singletones;
+		this.#singletons = singletons;
 	}
 
 	/** Register an initializer to be executed automatically when the container is created */
@@ -65,10 +65,10 @@ export class ContainerBuilder<TContainerInterface = any> {
 
 		return new Container({
 			types: Object.freeze([...this.#types]),
-			singletones: this.#singletones,
-			builderFactory: ({ singletones }) => new BuilderType({
+			singletons: this.#singletons,
+			builderFactory: ({ singletons }) => new BuilderType({
 				types: this.#types.filter(t => t.aliases.length),
-				singletones
+				singletons
 			})
 		}) as TContainerInterface;
 	}

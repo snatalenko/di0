@@ -28,8 +28,8 @@ export class Container {
 
 	#types: Readonly<TypeConfig<any>[]>;
 	#instances: any = {};
-	#singletones: any;
-	#builderFactory: (options: { singletones: object }) => ContainerBuilder<this>;
+	#singletons: any;
+	#builderFactory: (options: { singletons: object }) => ContainerBuilder<this>;
 
 	logger?: {
 		log: (...args: any) => void
@@ -38,13 +38,13 @@ export class Container {
 	/** Type aliases, stacked on each type instantiation */
 	_dependencyStack: string[] = [];
 
-	constructor({ types, singletones, builderFactory }: {
+	constructor({ types, singletons, builderFactory }: {
 		types: Readonly<TypeConfig<any>[]>,
-		singletones: TParameterObject,
-		builderFactory: (options: { singletones: object }) => ContainerBuilder<any>
+		singletons: TParameterObject,
+		builderFactory: (options: { singletons: object }) => ContainerBuilder<any>
 	}) {
 		this.#types = types;
-		this.#singletones = singletones;
+		this.#singletons = singletons;
 		this.#builderFactory = builderFactory;
 
 		for (const { aliases } of this.#types) {
@@ -85,8 +85,8 @@ export class Container {
 			throw new Error(`alias "${alias}" is not registered`);
 
 		const { id, instanceType, factory } = types[types.length - 1];
-		if (this.#singletones[id])
-			return this.#singletones[id];
+		if (this.#singletons[id])
+			return this.#singletons[id];
 
 		if (this.#instances[id])
 			return this.#instances[id];
@@ -112,7 +112,7 @@ export class Container {
 		}
 
 		if (instanceType === INSTANCE_SINGLE)
-			this.#singletones[id] = instance;
+			this.#singletons[id] = instance;
 		else if (instanceType === INSTANCE_PER_CONTAINER)
 			this.#instances[id] = instance;
 
@@ -143,7 +143,10 @@ export class Container {
 		return types.map(({ id }) => this.get(id));
 	}
 
-	createInstance<T>(Type: TClassConstructor<T>, additionalParams?: TParameterObject): T;
+	createInstance<TClass extends new (...args: any) => any>(
+		Type: TClass,
+		additionalParams?: Partial<ConstructorParameters<TClass>[0]>
+	): InstanceType<TClass>;
 	createInstance<T>(factory: TFactory<T, this>, additionalParams?: TParameterObject): T;
 	createInstance<T>(Type: TClassOrFactory<T, this>, additionalParams?: TParameterObject): T;
 
@@ -166,7 +169,7 @@ export class Container {
 	 */
 	builder(): ContainerBuilder<this> {
 		return this.#builderFactory({
-			singletones: this.#singletones
+			singletons: this.#singletons
 		});
 	}
 }
