@@ -22,7 +22,7 @@
     "build": "tsc",
     "prepare": "npm run build",
     "preversion": "npm test",
-    "version": "npm run changelog && git add CHANGELOG.md"
+    "version": "./scripts/ci/cleanup_obsolete_tags.sh v$npm_package_version && npm run changelog && git add CHANGELOG.md"
   },
   "keywords": [
     "dependency",
