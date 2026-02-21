@@ -1,7 +1,7 @@
-import { Container } from "./Container";
-import type { ClassConstructor, ClassOrFactory, Factory } from "./ClassOrFactory";
-import { TypeConfig } from "./TypeConfig";
-import { validateAlias } from "./validateAlias";
+import { Container } from "./Container.ts";
+import type { ClassConstructor, ClassOrFactory, Factory } from "./ClassOrFactory.ts";
+import { TypeConfig } from "./TypeConfig.ts";
+import { validateAlias } from "./validateAlias.ts";
 
 type TParameterObject = {
 	[key: string]: any

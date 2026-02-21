@@ -1,4 +1,4 @@
-import type { Container } from "./Container";
+import type { Container } from "./Container.ts";
 
 export type ClassConstructor<T> = {
 	new(...args: any[]): T;

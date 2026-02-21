@@ -1,8 +1,8 @@
-import CircularDependencyError from './CircularDependencyError';
-import { ContainerBuilder } from './ContainerBuilder';
-import type { ClassConstructor, ClassOrFactory, Factory } from './ClassOrFactory';
-import { INSTANCE_PER_CONTAINER, INSTANCE_SINGLE } from './LifetimeMode';
-import { TypeConfig } from './TypeConfig';
+import CircularDependencyError from './CircularDependencyError.ts';
+import { ContainerBuilder } from './ContainerBuilder.ts';
+import type { ClassConstructor, ClassOrFactory, Factory } from './ClassOrFactory.ts';
+import { INSTANCE_PER_CONTAINER, INSTANCE_SINGLE } from './LifetimeMode.ts';
+import { TypeConfig } from './TypeConfig.ts';
 
 type ParameterObject = {
 	[key: string]: any

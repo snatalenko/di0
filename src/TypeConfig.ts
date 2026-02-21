@@ -1,12 +1,12 @@
-import type { ClassOrFactory } from "./ClassOrFactory";
+import type { ClassOrFactory } from "./ClassOrFactory.ts";
 import {
 	INSTANCE_PER_CONTAINER,
 	INSTANCE_PER_DEPENDENCY,
 	INSTANCE_SINGLE,
 	type LifetimeMode
-} from "./LifetimeMode";
-import type { Container } from "./Container";
-import { validateAlias } from "./validateAlias";
+} from "./LifetimeMode.ts";
+import type { Container } from "./Container.ts";
+import { validateAlias } from "./validateAlias.ts";
 
 export class TypeConfig<T, TContainerInterface = any> {
 
