@@ -1,3 +1,11 @@
+# [1.3.0-2](https://github.com/snatalenko/di0/compare/v1.3.0-1...v1.3.0-2) (2026-02-21)
+
+
+### Tests
+
+* Cover additional instance lifecycle cases ([23c5138](https://github.com/snatalenko/di0/commit/23c513807c46de1a411d7b31cf6331011c1f5b45))
+
+
 # [1.3.0-1](https://github.com/snatalenko/di0/compare/v1.3.0-0...v1.3.0-1) (2026-02-21)
 
 
