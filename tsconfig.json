@@ -1,21 +1,22 @@
 {
-    "compileOnSave": true,
     "compilerOptions": {
         "module": "CommonJS",
-        "removeComments": false,
-        "sourceMap": true,
-        "strict": true,
-        "alwaysStrict": false,
-        "outDir": "./dist",
+        "target": "ES2022",
         "lib": [
-            "ES2018"
+            "ES2022"
         ],
-        "target": "ES2018",
-        "declaration": false,
-        "strictNullChecks": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
-        "allowJs": false
+        "strict": true,
+        "isolatedModules": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "alwaysStrict": false,
+        "noEmit": true,
+        "allowImportingTsExtensions": true,
+        "rewriteRelativeImportExtensions": true
     },
     "include": [
         "src/**/*"
