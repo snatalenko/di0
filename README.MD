@@ -4,6 +4,8 @@
 [![Downloads](https://img.shields.io/npm/dm/di0.svg)](https://www.npmjs.com/package/di0)
 [![Coverage](https://coveralls.io/repos/github/snatalenko/di0/badge.svg)](https://coveralls.io/github/snatalenko/di0)
 [![License](https://img.shields.io/github/license/snatalenko/di0.svg)](https://github.com/snatalenko/di0)
+[![tests/audit](https://github.com/snatalenko/di0/actions/workflows/ci.yml/badge.svg)](https://github.com/snatalenko/di0/actions/workflows/ci.yml)
+
 
 Zero-config DI container. Register classes or factories by alias; dependencies are injected automatically via constructor destructuring.
 
