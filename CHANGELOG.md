@@ -1,3 +1,12 @@
+# [1.3.0-1](https://github.com/snatalenko/di0/compare/v1.3.0-0...v1.3.0-1) (2026-02-21)
+
+
+### Build System
+
+* Enable native Node.js type stripping support ([89bfbc2](https://github.com/snatalenko/di0/commit/89bfbc250f6e0cc3f7ac22cadeb911c09bb6800f))
+* Add separate ESM/CJS builds ([8e519f8](https://github.com/snatalenko/di0/commit/8e519f81c7607f5283393e8896c96a28f68587b1))
+
+
 # [1.3.0-0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0-0) (2026-02-20)
 
 
