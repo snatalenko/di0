@@ -14,7 +14,7 @@ interface ITestContainer extends Container {
 	logger?: any;
 }
 
-class X {}
+class X { }
 
 class Y {
 	_x: X;
@@ -264,6 +264,16 @@ describe('Container', () => {
 
 			expect(container.x === derivedContainer.x).toBe(false);
 		});
+
+		it('creates a separate instance for each builder.container() call', () => {
+
+			const c1 = builder.container();
+			const c2 = builder.container();
+
+			expect(c1.x).toBeInstanceOf(X);
+			expect(c2.x).toBeInstanceOf(X);
+			expect(c1.x).not.toBe(c2.x);
+		});
 	});
 
 	describe('asSingleInstance', () => {
@@ -292,6 +302,20 @@ describe('Container', () => {
 			const derivedContainer = derivedBuilder.container();
 
 			expect(derivedContainer.y).toBe(parentContainer.y);
+		});
+
+		it('shares singleton instances across multiple builder.container() calls', () => {
+
+			let callCount = 0;
+			builder.register((_: any) => { callCount++; return new X(); }).asSingleInstance().as('x' as any);
+
+			const c1 = builder.container();
+			const c2 = builder.container();
+
+			expect(c1.x).toBeInstanceOf(X);
+			expect(c2.x).toBeInstanceOf(X);
+			expect(c1.x).toBe(c2.x);
+			expect(callCount).toBe(1);
 		});
 	});
 
@@ -411,7 +435,7 @@ describe('Container', () => {
 
 		it('is order-independent: dependent registered before its dep', () => {
 
-			class Engine {}
+			class Engine { }
 			class Car {
 				engine: Engine;
 				constructor({ engine }: { engine: Engine }) {
@@ -431,7 +455,7 @@ describe('Container', () => {
 
 		it('type factory can access resolver-resolved dependency', () => {
 
-			class Engine {}
+			class Engine { }
 			class Car {
 				engine: Engine;
 				constructor({ engine }: { engine: Engine }) {
