@@ -211,8 +211,12 @@ export class Container {
 					matches.push(inst);
 			}
 
-			if (matches.length > 1)
-				throw new TypeError(`Multiple types matched resolver for alias "${alias}": use .as() to disambiguate`);
+			if (matches.length > 1) {
+				const names = matches.map(m => m?.constructor?.name).filter(n => !!n);
+				const namesStr = names.length > 1 ? ` (${names.join(', ')})` : '';
+
+				throw new TypeError(`Multiple types matched resolver for alias "${alias}"${namesStr}: use .as() to disambiguate`);
+			}
 
 			return matches[0];
 		}

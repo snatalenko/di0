@@ -508,6 +508,18 @@ describe('Container', () => {
 			const c = builder.container();
 
 			expect(() => c.engine).toThrow(
+				'Multiple types matched resolver for alias "engine" (X, X): use .as() to disambiguate'
+			);
+		});
+
+		it('throws without class names when matched instances have no constructor name', () => {
+
+			builder.addResolver(() => true, 'engine');
+			builder.register(() => Object.create(null));
+			builder.register(() => Object.create(null));
+			const c = builder.container();
+
+			expect(() => c.engine).toThrow(
 				'Multiple types matched resolver for alias "engine": use .as() to disambiguate'
 			);
 		});
