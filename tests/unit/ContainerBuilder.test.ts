@@ -2,6 +2,7 @@ import { ContainerBuilder, Container } from '../../src';
 
 interface IBuilderTestContainer extends Container {
 	x?: X;
+	y?: Y;
 }
 
 class X {}
@@ -107,6 +108,53 @@ describe('ContainerBuilder', () => {
 			expect(() => {
 				builder.register(() => new X(), 'get' as any);
 			}).toThrow(TypeError);
+		});
+
+		it('throws when .as() is called twice with the same alias on the same registration', () => {
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			expect(() => {
+				builder.register(X).as('x').as('x');
+			}).toThrow('Alias "x" is already registered for the type');
+		});
+	});
+
+	describe('registerInstance', () => {
+
+		it('returns the exact instance provided', () => {
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			const x = new X();
+			builder.registerInstance(x, 'x');
+			const container = builder.container();
+
+			expect(container.x).toBe(x);
+		});
+
+		it('makes the instance injectable into other types', () => {
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			const x = new X();
+			builder.registerInstance(x, 'x');
+			builder.register(Y, 'y');
+			const container = builder.container();
+
+			expect((container.y as Y)._x).toBe(x);
+		});
+
+		it('shares the instance across derived containers', () => {
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			const x = new X();
+			builder.registerInstance(x, 'x');
+			const parent = builder.container();
+			const child = parent.builder().container();
+
+			expect(child.x).toBe(parent.x);
+		});
+
+		it('returns a TypeConfig for further configuration', () => {
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			const x = new X();
+			const config = builder.registerInstance(x, 'x');
+
+			expect(typeof config.as).toBe('function');
 		});
 	});
 });

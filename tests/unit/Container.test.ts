@@ -1,4 +1,5 @@
 import { ContainerBuilder, Container } from '../../src';
+import { CircularDependencyError, AmbiguousResolverError } from '../../src/errors/index.ts';
 
 interface ITestContainer extends Container {
 	x: X;
@@ -130,6 +131,10 @@ describe('Container', () => {
 			builder.register(({ b: _b }: ITestContainer) => null as any, 'a');
 			builder.register(({ c: _c }: ITestContainer) => null as any, 'b');
 			container = builder.container();
+
+			expect(() => {
+				container.get('a');
+			}).toThrowError(CircularDependencyError);
 
 			expect(() => {
 				container.get('a');
@@ -273,6 +278,18 @@ describe('Container', () => {
 			expect(c1.x).toBeInstanceOf(X);
 			expect(c2.x).toBeInstanceOf(X);
 			expect(c1.x).not.toBe(c2.x);
+		});
+
+		it('overrides a previously set singleton lifetime', () => {
+
+			builder.register(Y).as('y').asSingleInstance().asInstancePerContainer();
+
+			const c1 = builder.container();
+			const c2 = builder.container();
+
+			expect(c1.y).toBeInstanceOf(Y);
+			expect(c2.y).toBeInstanceOf(Y);
+			expect(c1.y).not.toBe(c2.y);
 		});
 	});
 
@@ -444,13 +461,32 @@ describe('Container', () => {
 			}
 
 			builder.addResolver(i => i instanceof Engine, 'engine');
-			builder.addResolver(i => i instanceof Car, 'car');
-			builder.register(Car);    // registered before Engine
+			builder.register(Car).as('car'); // aliased = lazy, so Engine is ready when car is accessed
 			builder.register(Engine);
 			const c = builder.container();
 
 			expect(c.car).toBeInstanceOf(Car);
 			expect((c.car as Car).engine).toBeInstanceOf(Engine);
+		});
+
+		it('resolves via Object.create prototype scan when the type is not yet instantiated', () => {
+
+			class Engine { }
+			class Car {
+				engine: Engine;
+				constructor({ engine }: { engine: Engine }) {
+					this.engine = engine;
+				}
+			}
+
+			builder.addResolver(i => i instanceof Engine, 'engine');
+			builder.register(Car);    // unaliased — eagerly constructed first, before Engine is in instances
+			builder.register(Engine); // unaliased — not yet in instances when Car is being constructed
+
+			const c = builder.container();
+
+			// Engine was resolved via Object.create(Engine.prototype) during Car's eager construction
+			expect((c as any).engine).toBeInstanceOf(Engine);
 		});
 
 		it('type factory can access resolver-resolved dependency', () => {
@@ -524,12 +560,35 @@ describe('Container', () => {
 			expect(c.engine).toBeUndefined();
 		});
 
+		it('does not match an unaliased factory function via prototype scan even when predicate returns true', () => {
+
+			// Factories have no meaningful prototype — #findPrototypesByPredicate skips them via !isClass.
+			// The factory must be unaliased (eager) and registered after the dependent so that it
+			// is not yet in #instances when the prototype scan runs during the dependent's construction.
+			class Dependent {
+				engine: any;
+				constructor({ engine }: any) { this.engine = engine; }
+			}
+
+			builder.addResolver(() => true, 'engine');
+			const depConfig = builder.register(Dependent); // eager, constructed first
+			builder.register(() => ({})); // unaliased factory — not a class, not yet instantiated
+
+			const c = builder.container();
+
+			// During Dependent's eager construction, the factory was not yet in instances
+			// and was skipped by !isClass in the prototype scan → engine received undefined
+			expect((c.get(depConfig.id) as Dependent).engine).toBeUndefined();
+		});
+
 		it('throws when multiple unaliased types match the predicate', () => {
 
 			builder.addResolver(i => i instanceof X, 'engine');
 			builder.register(X);
 			builder.register(X);
 			const c = builder.container();
+
+			expect(() => c.engine).toThrowError(AmbiguousResolverError);
 
 			expect(() => c.engine).toThrow(
 				'Multiple types matched resolver for alias "engine" (X, X): use .as() to disambiguate'

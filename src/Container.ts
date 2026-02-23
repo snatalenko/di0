@@ -1,4 +1,4 @@
-import CircularDependencyError from './CircularDependencyError.ts';
+import { CircularDependencyError, AmbiguousResolverError } from './errors/index.ts';
 import { ContainerBuilder } from './ContainerBuilder.ts';
 import type { ClassConstructor, ClassOrFactory, Factory } from './ClassOrFactory.ts';
 import { INSTANCE_PER_CONTAINER, INSTANCE_SINGLE } from './LifetimeMode.ts';
@@ -32,15 +32,14 @@ export class Container {
 	readonly #instances: any = {};
 	readonly #singletons: any;
 	readonly #resolvers: Resolvers;
-	readonly #inProgress: Set<symbol> = new Set();
 	readonly #builderFactory: (options: { singletons: object }) => ContainerBuilder<this>;
 
 	logger?: {
 		log: (...args: any) => void
 	};
 
-	/** Type aliases, stacked on each type instantiation */
-	_dependencyStack: string[] = [];
+	/** Tracks what is currently being resolved — string aliases and symbol type IDs */
+	protected readonly _dependencyStack: Set<string | Symbol> = new Set();
 
 	constructor({ types, singletons, resolvers = new Map(), builderFactory }: {
 		types: Readonly<TypeConfig<any>[]>,
@@ -68,6 +67,14 @@ export class Container {
 				throw new TypeError(`Alias "${alias}" is registered with both .as() and .asOneOf() — use one or the other`);
 		}
 
+		for (const [alias] of this.#resolvers) {
+			Object.defineProperty(this, alias, {
+				get: () => this.get(alias),
+				configurable: true,
+				enumerable: true
+			});
+		}
+
 		for (const { aliases } of this.#types) {
 			for (const alias of aliases) {
 				Object.defineProperty(this, alias, {
@@ -78,19 +85,6 @@ export class Container {
 					enumerable: true
 				});
 			}
-		}
-
-		// Resolver alias getters — only for aliases not already covered by an explicit registration.
-		// If an explicit alias exists, get() finds it first; the resolver is not consulted.
-		for (const [alias] of this.#resolvers) {
-			if (singleAliases.has(alias) || collectionAliases.has(alias))
-				continue;
-
-			Object.defineProperty(this, alias, {
-				get: () => this.get(alias),
-				configurable: true,
-				enumerable: true
-			});
 		}
 
 		// bind container methods to container
@@ -106,17 +100,11 @@ export class Container {
 		}
 
 		// Eagerly instantiate unaliased types (initializers).
-		// #inProgress tracks types mid-instantiation so resolver scans skip them,
-		// and the skip-if-already-set guard prevents double-instantiation when a
-		// resolver triggered lazy instantiation first.
-		for (const type of this.#types.filter(t => !t.aliases.length)) {
-			const { id, factory, instanceType } = type;
-			if (Object.prototype.hasOwnProperty.call(this.#instances, id))
-				continue;
-			if (Object.prototype.hasOwnProperty.call(this.#singletons, id))
+		for (const { id, type: Type, instanceType } of this.#types.filter(t => !t.aliases.length)) {
+			if (id in this.#instances || id in this.#singletons)
 				continue;
 
-			const instance = this.#runFactory(id, factory);
+			const instance = this.#instantiate(id, Type);
 
 			if (instanceType === INSTANCE_SINGLE)
 				this.#singletons[id] = instance;
@@ -125,14 +113,21 @@ export class Container {
 		}
 	}
 
-	/** Invoke a factory while marking its type as in-progress, so resolver scans can skip it */
-	#runFactory<T>(id: symbol, factory: (c: this) => T): T {
-		this.#inProgress.add(id);
+	#instantiate<T>(key: string | Symbol, Type: ClassOrFactory<T, any>): T {
+		if (this._dependencyStack.has(key))
+			throw new CircularDependencyError([...this._dependencyStack, key]);
+
+		this._dependencyStack.add(key);
 		try {
-			return factory(this);
+			const instance = this.createInstance(Type);
+
+			if (!this._dependencyStack.has('logger'))
+				this.logger?.log('silly', `${[...this._dependencyStack].map(String).join('.')} instance created`);
+
+			return instance;
 		}
 		finally {
-			this.#inProgress.delete(id);
+			this._dependencyStack.delete(key);
 		}
 	}
 
@@ -153,32 +148,15 @@ export class Container {
 			throw new Error(`alias "${alias}" is not registered`);
 		}
 
-		const { id, instanceType, factory } = types[types.length - 1];
-		if (Object.prototype.hasOwnProperty.call(this.#singletons, id))
+		const { id, instanceType, type: Type } = types[types.length - 1];
+
+		if (id in this.#singletons)
 			return this.#singletons[id];
 
-		if (Object.prototype.hasOwnProperty.call(this.#instances, id))
+		if (id in this.#instances)
 			return this.#instances[id];
 
-		let instance;
-		if (typeof alias === 'string') {
-			if (this._dependencyStack.includes(alias))
-				throw new CircularDependencyError([...this._dependencyStack, alias]);
-
-			this._dependencyStack.push(alias);
-			try {
-				instance = this.#runFactory(id, factory);
-
-				if (alias !== 'logger')
-					this.logger?.log('silly', `${this._dependencyStack.join('.')} instance created`);
-			}
-			finally {
-				this._dependencyStack.pop();
-			}
-		}
-		else {
-			instance = this.#runFactory(id, factory);
-		}
+		const instance = this.#instantiate(alias, Type);
 
 		if (instanceType === INSTANCE_SINGLE)
 			this.#singletons[id] = instance;
@@ -188,41 +166,61 @@ export class Container {
 		return instance;
 	}
 
+	/** Scan already-created instances for predicate matches */
+	* #findInstancesByPredicate(pred: (instance: any) => boolean): IterableIterator<any> {
+		for (const { id, aliases } of this.#types) {
+			if (aliases.length)
+				continue; // unaliased types only
+
+			if (id in this.#instances && pred(this.#instances[id]))
+				yield this.#instances[id];
+
+			if (id in this.#singletons && pred(this.#singletons[id]))
+				yield this.#singletons[id];
+		}
+	}
+
 	/**
-	 * Resolve a value by scanning all unaliased types with the given predicate.
-	 * Called by get() when no explicit registration is found for the alias.
-	 * Throws if more than one type matches.
+	 * Scan uninstantiated class-type registrations via prototype matching.
+	 * Only runs when #resolveByInstances found nothing.
+	 */
+	* #findPrototypesByPredicate(pred: (instance: any) => boolean): IterableIterator<any> {
+		for (const { id, type: Type, aliases } of this.#types) {
+			if (aliases.length)
+				continue; // unaliased types only
+			if (this._dependencyStack.has(id))
+				continue; // skip types currently being constructed
+			if (id in this.#instances || id in this.#singletons)
+				continue; // already instantiated — handled by #resolveByInstances
+			if (!isClass(Type))
+				continue; // factory functions have no meaningful prototype
+
+			if (pred(Object.create(Type.prototype)))
+				yield this.get(id);
+		}
+	}
+
+	/**
+	 * Resolve a value via registered predicate.
+	 * First checks already-created instances; falls back to prototype scanning.
 	 */
 	#resolveByPredicate(alias: string, pred: (instance: any) => boolean): object {
-		if (this._dependencyStack.includes(alias))
-			throw new CircularDependencyError([...this._dependencyStack, alias]);
+		const matches = [];
 
-		this._dependencyStack.push(alias);
-		try {
-			const matches: any[] = [];
-			for (const { id, aliases: typeAliases } of this.#types) {
-				if (typeAliases.length)
-					continue; // unaliased types only
-				if (this.#inProgress.has(id))
-					continue; // skip types currently being instantiated
+		for (const m of this.#findInstancesByPredicate(pred))
+			matches.push(m);
 
-				const inst = this.get(id);
-				if (pred(inst))
-					matches.push(inst);
-			}
-
-			if (matches.length > 1) {
-				const names = matches.map(m => m?.constructor?.name).filter(n => !!n);
-				const namesStr = names.length > 1 ? ` (${names.join(', ')})` : '';
-
-				throw new TypeError(`Multiple types matched resolver for alias "${alias}"${namesStr}: use .as() to disambiguate`);
-			}
-
-			return matches[0];
+		if (!matches.length) {
+			for (const m of this.#findPrototypesByPredicate(pred))
+				matches.push(m);
 		}
-		finally {
-			this._dependencyStack.pop();
+
+		if (matches.length > 1) {
+			const names = matches.map(m => m?.constructor?.name).filter(n => !!n);
+			throw new AmbiguousResolverError(alias, names);
 		}
+
+		return matches[0];
 	}
 
 	/**

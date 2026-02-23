@@ -5,7 +5,6 @@ import {
 	INSTANCE_SINGLE,
 	type LifetimeMode
 } from "./LifetimeMode.ts";
-import type { Container } from "./Container.ts";
 import { validateAlias } from "./validateAlias.ts";
 
 export class TypeConfig<T, TContainerInterface = any> {
@@ -22,8 +21,8 @@ export class TypeConfig<T, TContainerInterface = any> {
 	/** How to instantiate the type */
 	instanceType: LifetimeMode = INSTANCE_PER_CONTAINER;
 
-	/** Type instance factory */
-	readonly factory: (container: TContainerInterface & Container) => T;
+	/** The registered class constructor or factory function */
+	readonly type: ClassOrFactory<T, TContainerInterface>;
 
 	/**
 	 * Creates an instance of TypeConfig<T>
@@ -35,7 +34,7 @@ export class TypeConfig<T, TContainerInterface = any> {
 			throw new TypeError('Type cannot have more than 1 argument');
 
 		this.id = Symbol(Type.name);
-		this.factory = container => container.createInstance(Type);
+		this.type = Type;
 	}
 
 	/**
