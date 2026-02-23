@@ -1,3 +1,11 @@
+# [1.3.0-3](https://github.com/snatalenko/di0/compare/v1.3.0-2...v1.3.0-3) (2026-02-23)
+
+
+### Documentation
+
+* Add tests/audit badge ([33aac86](https://github.com/snatalenko/di0/commit/33aac86facdcbe874ab33c02879bfff5fae8b231))
+
+
 # [1.3.0-2](https://github.com/snatalenko/di0/compare/v1.3.0-1...v1.3.0-2) (2026-02-21)
 
 
