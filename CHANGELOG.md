@@ -1,3 +1,11 @@
+# [1.3.0-4](https://github.com/snatalenko/di0/compare/v1.3.0-3...v1.3.0-4) (2026-02-23)
+
+
+### Build System
+
+* Exclude unnecessary configs and docs from package ([9f9cc1e](https://github.com/snatalenko/di0/commit/9f9cc1e3628a2a86f7af923b19d964aaf1d02d56))
+
+
 # [1.3.0-3](https://github.com/snatalenko/di0/compare/v1.3.0-2...v1.3.0-3) (2026-02-23)
 
 
