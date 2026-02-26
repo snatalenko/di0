@@ -1,3 +1,15 @@
+# [1.3.0-5](https://github.com/snatalenko/di0/compare/v1.3.0-4...v1.3.0-5) (2026-02-26)
+
+
+### Changes
+
+* Allow instances registration w\o an alias ([47db2e5](https://github.com/snatalenko/di0/commit/47db2e517f2fa3965d7a40bb5be143f5d5d388ae))
+
+### Documentation
+
+* Update instructions on how to run a single test ([7183bb9](https://github.com/snatalenko/di0/commit/7183bb98c21e351dfff33a50a98d604f419ef472))
+
+
 # [1.3.0-4](https://github.com/snatalenko/di0/compare/v1.3.0-3...v1.3.0-4) (2026-02-23)
 
 
