@@ -11,7 +11,7 @@ npm run cleanup        # Delete dist/ build output
 
 Run a single test file:
 ```bash
-npx jest tests/unit/Container.test.ts
+npm test tests/unit/Container.test.ts
 ```
 
 ## Architecture
