@@ -50,14 +50,13 @@ export class ContainerBuilder<TContainerInterface = any> {
 		return t;
 	}
 
-	/**
-	 * Register instance
-	 * (which will be a singleton with an alias)
-	 */
-	registerInstance<T>(instance: T, alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
+	/** Register instance as a singleton, optionally exposed under `alias` */
+	registerInstance<T>(instance: T, alias?: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
 		const t = new TypeConfig<T, TContainerInterface>(() => instance)
-			.asSingleInstance()
-			.as(alias);
+			.asSingleInstance();
+
+		if (alias)
+			t.as(alias);
 
 		this.#types.push(t);
 		return t;

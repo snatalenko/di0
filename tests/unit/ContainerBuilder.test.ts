@@ -156,5 +156,15 @@ describe('ContainerBuilder', () => {
 
 			expect(typeof config.as).toBe('function');
 		});
+
+		it('can be registered without alias and resolved through a resolver', () => {
+			const builder = new ContainerBuilder<IBuilderTestContainer>();
+			const x = new X();
+			builder.registerInstance(x);
+			builder.addResolver(instance => instance instanceof X, 'x');
+			const container = builder.container();
+
+			expect(container.x).toBe(x);
+		});
 	});
 });
