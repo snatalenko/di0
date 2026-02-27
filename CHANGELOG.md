@@ -1,3 +1,7 @@
+# [1.3.0-6](https://github.com/snatalenko/di0/compare/v1.3.0-5...v1.3.0-6) (2026-02-27)
+
+
+
 # [1.3.0-5](https://github.com/snatalenko/di0/compare/v1.3.0-4...v1.3.0-5) (2026-02-26)
 
 
