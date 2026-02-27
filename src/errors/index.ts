@@ -1,2 +1,2 @@
-export * from './AmbiguousResolverError';
-export * from './CircularDependencyError';
+export * from './AmbiguousResolverError.ts';
+export * from './CircularDependencyError.ts';
