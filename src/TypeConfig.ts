@@ -1,6 +1,11 @@
-import { Container } from "./Container";
-import { TClassOrFactory } from "./TClassOrFactory";
-import { INSTANCE_PER_CONTAINER, INSTANCE_PER_DEPENDENCY, INSTANCE_SINGLE, TInstanceType } from "./TInstanceType";
+import type { ClassOrFactory } from "./ClassOrFactory.ts";
+import {
+	INSTANCE_PER_CONTAINER,
+	INSTANCE_PER_DEPENDENCY,
+	INSTANCE_SINGLE,
+	type LifetimeMode
+} from "./LifetimeMode.ts";
+import { validateAlias } from "./validateAlias.ts";
 
 export class TypeConfig<T, TContainerInterface = any> {
 
@@ -10,23 +15,26 @@ export class TypeConfig<T, TContainerInterface = any> {
 	/** List of type aliases */
 	readonly aliases: string[] = [];
 
-	/** How to instantiate the type */
-	instanceType: TInstanceType = INSTANCE_PER_CONTAINER;
+	/** Aliases for which the container property should return an array of all instances */
+	readonly collectionAliases: Set<string> = new Set();
 
-	/** Type instance factory */
-	readonly factory: (container: TContainerInterface & Container) => T;
+	/** How to instantiate the type */
+	instanceType: LifetimeMode = INSTANCE_PER_CONTAINER;
+
+	/** The registered class constructor or factory function */
+	readonly type: ClassOrFactory<T, TContainerInterface>;
 
 	/**
 	 * Creates an instance of TypeConfig<T>
 	 */
-	constructor(Type: TClassOrFactory<T, TContainerInterface>) {
+	constructor(Type: ClassOrFactory<T, TContainerInterface>) {
 		if (typeof Type !== 'function')
 			throw new TypeError('Type argument must be a Function');
 		if (Type.length > 1)
 			throw new TypeError('Type cannot have more than 1 argument');
 
 		this.id = Symbol(Type.name);
-		this.factory = container => container.createInstance(Type);
+		this.type = Type;
 	}
 
 	/**
@@ -34,21 +42,26 @@ export class TypeConfig<T, TContainerInterface = any> {
 	 * The alias will be used to inject object instance as dependency to other types.
 	 */
 	as(alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
-		if (typeof alias !== 'string' || !alias.length)
-			throw new TypeError('Alias argument must be a non-empty String');
-		if (this.aliases.includes(alias))
+		validateAlias(alias);
+
+		if (this.aliases.includes(alias as string))
 			throw new TypeError(`Alias "${alias}" is already registered for the type`);
 
-		const forbiddenAliases = [
-			Container.prototype.get.name,
-			Container.prototype.getAll.name,
-			Container.prototype.createInstance.name,
-			Container.prototype.has.name
-		];
-		if (forbiddenAliases.includes(alias))
-			throw new TypeError(`Alias "${alias}" conflicts with container method`);
+		this.aliases.push(alias as string);
+		return this;
+	}
 
-		this.aliases.push(alias);
+	/**
+	 * Instruct to expose object instance on container as one element of an array under the given `alias`.
+	 * Multiple registrations with the same alias accumulate into the array.
+	 */
+	asOneOf(alias: keyof TContainerInterface): TypeConfig<T, TContainerInterface> {
+		validateAlias(alias);
+
+		if (!this.aliases.includes(alias as string))
+			this.aliases.push(alias as string);
+
+		this.collectionAliases.add(alias as string);
 		return this;
 	}
 
