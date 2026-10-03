@@ -8,6 +8,7 @@ tests/
 .eslintrc.json
 *.md
 *.tgz
+changelog.config.mjs
 jest.config.cjs
 jsconfig.json
 tsconfig*.json

@@ -1,5 +1,5 @@
-# [1.3.0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0) (2026-03-18)
 
+## [1.3.0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0) (2026-03-18)
 
 ### Features
 
@@ -10,111 +10,34 @@
 
 * Allow instances registration w\o an alias ([47db2e5](https://github.com/snatalenko/di0/commit/47db2e517f2fa3965d7a40bb5be143f5d5d388ae))
 
-### Documentation
-
-* Remove gotchas section from CONTRIBUTING.md ([5e95203](https://github.com/snatalenko/di0/commit/5e952032ca3085e142f03f373e9748c91023646f))
-* Update README.md, add CONTRIBUTING.md, change license to Apache-2.0 ([55536dc](https://github.com/snatalenko/di0/commit/55536dc261b3a4f979ac15329c878f6a63117201))
-* Add tests/audit badge ([33aac86](https://github.com/snatalenko/di0/commit/33aac86facdcbe874ab33c02879bfff5fae8b231))
-* Update instructions on how to run a single test ([7183bb9](https://github.com/snatalenko/di0/commit/7183bb98c21e351dfff33a50a98d604f419ef472))
-
-### Tests
-
-* Use Jest instead of Mocha and Nyc ([dba8c6a](https://github.com/snatalenko/di0/commit/dba8c6a8d431c63442a61d73c607bfa135322984))
-* Cover additional instance lifecycle cases ([23c5138](https://github.com/snatalenko/di0/commit/23c513807c46de1a411d7b31cf6331011c1f5b45))
-
-### Build System
-
-* Cleanup obsolete tags on new version creation ([b9f2382](https://github.com/snatalenko/di0/commit/b9f2382694e08a82f46d53b0e8f31b9e538c1f9b))
-* Add GitHub Actions workflow for publishing to NPM ([c39aaa3](https://github.com/snatalenko/di0/commit/c39aaa382eff49a2e092e5fa15dbecf163bf825b))
-* Add audit, tests, and coveralls build actions ([f33baa2](https://github.com/snatalenko/di0/commit/f33baa23e40ae7fcf083895603cb1a5671809349))
-* Enable native Node.js type stripping support ([89bfbc2](https://github.com/snatalenko/di0/commit/89bfbc250f6e0cc3f7ac22cadeb911c09bb6800f))
-* Add separate ESM/CJS builds ([8e519f8](https://github.com/snatalenko/di0/commit/8e519f81c7607f5283393e8896c96a28f68587b1))
-* Exclude unnecessary configs and docs from package ([9f9cc1e](https://github.com/snatalenko/di0/commit/9f9cc1e3628a2a86f7af923b19d964aaf1d02d56))
-
-
-# [1.3.0-6](https://github.com/snatalenko/di0/compare/v1.3.0-5...v1.3.0-6) (2026-02-27)
-
-
-
-# [1.3.0-5](https://github.com/snatalenko/di0/compare/v1.3.0-4...v1.3.0-5) (2026-02-26)
-
-
-### Changes
-
-* Allow instances registration w\o an alias ([47db2e5](https://github.com/snatalenko/di0/commit/47db2e517f2fa3965d7a40bb5be143f5d5d388ae))
-
-### Documentation
-
-* Update instructions on how to run a single test ([7183bb9](https://github.com/snatalenko/di0/commit/7183bb98c21e351dfff33a50a98d604f419ef472))
-
-
-# [1.3.0-4](https://github.com/snatalenko/di0/compare/v1.3.0-3...v1.3.0-4) (2026-02-23)
-
-
 ### Build System
 
 * Exclude unnecessary configs and docs from package ([9f9cc1e](https://github.com/snatalenko/di0/commit/9f9cc1e3628a2a86f7af923b19d964aaf1d02d56))
-
-
-# [1.3.0-3](https://github.com/snatalenko/di0/compare/v1.3.0-2...v1.3.0-3) (2026-02-23)
-
-
-### Documentation
-
-* Add tests/audit badge ([33aac86](https://github.com/snatalenko/di0/commit/33aac86facdcbe874ab33c02879bfff5fae8b231))
-
-
-# [1.3.0-2](https://github.com/snatalenko/di0/compare/v1.3.0-1...v1.3.0-2) (2026-02-21)
-
-
-### Tests
-
-* Cover additional instance lifecycle cases ([23c5138](https://github.com/snatalenko/di0/commit/23c513807c46de1a411d7b31cf6331011c1f5b45))
-
-
-# [1.3.0-1](https://github.com/snatalenko/di0/compare/v1.3.0-0...v1.3.0-1) (2026-02-21)
-
-
-### Build System
-
-* Enable native Node.js type stripping support ([89bfbc2](https://github.com/snatalenko/di0/commit/89bfbc250f6e0cc3f7ac22cadeb911c09bb6800f))
+* enable native Node.js type stripping support ([89bfbc2](https://github.com/snatalenko/di0/commit/89bfbc250f6e0cc3f7ac22cadeb911c09bb6800f))
 * Add separate ESM/CJS builds ([8e519f8](https://github.com/snatalenko/di0/commit/8e519f81c7607f5283393e8896c96a28f68587b1))
-
-
-# [1.3.0-0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0-0) (2026-02-20)
-
-
-### Features
-
-* `addResolver` for automatic wiring later registered types ([cf9dfff](https://github.com/snatalenko/di0/commit/cf9dfff48acb72799a9021e0e283a7dbc311810d))
-* `asOneOf` method for registering multiple types under the same alias ([1fede25](https://github.com/snatalenko/di0/commit/1fede25bf63489adbfe37306c3e44241123abcf9))
-
-### Documentation
-
-* Remove gotchas section from CONTRIBUTING.md ([5e95203](https://github.com/snatalenko/di0/commit/5e952032ca3085e142f03f373e9748c91023646f))
-* Update README.md, add CONTRIBUTING.md, change license to Apache-2.0 ([55536dc](https://github.com/snatalenko/di0/commit/55536dc261b3a4f979ac15329c878f6a63117201))
-
-### Tests
-
-* Use Jest instead of Mocha and Nyc ([dba8c6a](https://github.com/snatalenko/di0/commit/dba8c6a8d431c63442a61d73c607bfa135322984))
-
-### Build System
-
 * Cleanup obsolete tags on new version creation ([b9f2382](https://github.com/snatalenko/di0/commit/b9f2382694e08a82f46d53b0e8f31b9e538c1f9b))
 * Add GitHub Actions workflow for publishing to NPM ([c39aaa3](https://github.com/snatalenko/di0/commit/c39aaa382eff49a2e092e5fa15dbecf163bf825b))
 * Add audit, tests, and coveralls build actions ([f33baa2](https://github.com/snatalenko/di0/commit/f33baa23e40ae7fcf083895603cb1a5671809349))
 
+### Tests
 
-# [1.2.0](https://github.com/snatalenko/di0/compare/v1.1.0...v1.2.0) (2025-10-13)
+* Cover additional instance lifecycle cases ([23c5138](https://github.com/snatalenko/di0/commit/23c513807c46de1a411d7b31cf6331011c1f5b45))
+* Use Jest instead of Mocha and Nyc ([dba8c6a](https://github.com/snatalenko/di0/commit/dba8c6a8d431c63442a61d73c607bfa135322984))
 
+### Documentation
+
+* Update instructions on how to run a single test ([7183bb9](https://github.com/snatalenko/di0/commit/7183bb98c21e351dfff33a50a98d604f419ef472))
+* Add tests/audit badge ([33aac86](https://github.com/snatalenko/di0/commit/33aac86facdcbe874ab33c02879bfff5fae8b231))
+* Remove gotchas section from CONTRIBUTING.md ([5e95203](https://github.com/snatalenko/di0/commit/5e952032ca3085e142f03f373e9748c91023646f))
+* Update README.md, add CONTRIBUTING.md, change license to Apache-2.0 ([55536dc](https://github.com/snatalenko/di0/commit/55536dc261b3a4f979ac15329c878f6a63117201))
+
+## [1.2.0](https://github.com/snatalenko/di0/compare/v1.1.0...v1.2.0) (2025-10-13)
 
 ### Changes
 
 * Enhance type safety in Container and ContainerBuilder with generics ([4f0d3b9](https://github.com/snatalenko/di0/commit/4f0d3b99c9c38dae885a4b886fc484c0d1ebb3fc))
 
-
-# [1.1.0](https://github.com/snatalenko/di0/compare/v1.0.0...v1.1.0) (2025-09-28)
-
+## [1.1.0](https://github.com/snatalenko/di0/compare/v1.0.0...v1.1.0) (2025-09-28)
 
 ### Features
 
@@ -127,9 +50,7 @@
 * Upgrade typescript to v5.9.2 ([0278900](https://github.com/snatalenko/di0/commit/027890049354ae550e1ddd7ecce92cc3707f8b22))
 * Add cleanup script ([de3aa25](https://github.com/snatalenko/di0/commit/de3aa25f96dff71bb7b14761ec2ddfbfa63fcbee))
 
-
-# [1.0.0](https://github.com/snatalenko/di0/compare/v0.5.0...v1.0.0) (2022-02-10)
-
+## [1.0.0](https://github.com/snatalenko/di0/compare/v0.5.0...v1.0.0) (2022-02-10)
 
 ### Fixes
 
@@ -143,10 +64,7 @@
 
 * Use full sources for typing ([12a2e4b](https://github.com/snatalenko/di0/commit/12a2e4bd889c779e93163eb28c24a7fd15b59657))
 
-
-
-# [0.5.0](https://github.com/snatalenko/di0/compare/v0.4.0...v0.5.0) (2020-01-10)
-
+## [0.5.0](https://github.com/snatalenko/di0/compare/v0.4.0...v0.5.0) (2020-01-10)
 
 ### Features
 
@@ -156,9 +74,7 @@
 
 * Container builder of an extended type returned by builder() method ([be48e1b](https://github.com/snatalenko/di0/commit/be48e1b3e50fc935eb2b5a61a6090393c43e8ae8))
 
-
-# [0.4.0](https://github.com/snatalenko/di0/compare/v0.3.3...v0.4.0) (2020-01-09)
-
+## [0.4.0](https://github.com/snatalenko/di0/compare/v0.3.3...v0.4.0) (2020-01-09)
 
 ### Features
 
@@ -172,29 +88,19 @@
 
 * Describe class extensions and generics in definitions ([d20c4c4](https://github.com/snatalenko/di0/commit/d20c4c44551d52855f70dd4c1d2f8351cc3a6a5a))
 
-
 ## [0.3.3](https://github.com/snatalenko/di0/compare/v0.3.2...v0.3.3) (2020-01-06)
-
 
 ### Changes
 
 * Wrap types in a namespace ([b5809a4](https://github.com/snatalenko/di0/commit/b5809a481dc340c9b0e7cddd6d4bde11dbad06b2))
 
-
 ## [0.3.2](https://github.com/snatalenko/di0/compare/v0.3.1...v0.3.2) (2020-01-05)
-
-
 
 ## [0.3.1](https://github.com/snatalenko/di0/compare/v0.3.0...v0.3.1) (2020-01-05)
 
+## [0.3.0](https://github.com/snatalenko/di0/compare/v0.2.0...v0.3.0) (2020-01-05)
 
-
-# [0.3.0](https://github.com/snatalenko/di0/compare/v0.2.0...v0.3.0) (2020-01-05)
-
-
-
-# [0.2.0](https://github.com/snatalenko/di0/compare/v0.1.0...v0.2.0) (2019-12-27)
-
+## [0.2.0](https://github.com/snatalenko/di0/compare/v0.1.0...v0.2.0) (2019-12-27)
 
 ### Features
 
@@ -204,4 +110,4 @@
 
 * Add automatic changelog generating ([6139983](https://github.com/snatalenko/di0/commit/6139983009e622a2da7512393d5d6aeb0e11d6e1))
 
-
+## 0.1.0 (2019-12-26)
