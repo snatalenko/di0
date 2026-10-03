@@ -16,6 +16,15 @@
       "types": "./types/index.d.ts"
     }
   },
+  "files": [
+    "dist/**",
+    "types/**",
+    "src/**",
+    "README.MD",
+    "LICENSE",
+    "NOTICE",
+    "CHANGELOG.md"
+  ],
   "directories": {
     "test": "tests"
   },
