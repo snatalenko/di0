@@ -80,6 +80,21 @@ container.engines; // [GasEngine instance, ElectricEngine instance]
 
 Works with all instance lifetimes and container inheritance — child containers include parent registrations.
 
+## Exposing Derived Values (`exposes`)
+
+Expose values derived from an instance under their own aliases. All values exposed by a registration come from the same instance, created lazily on first access:
+
+```js
+builder.register(UsersProjection)
+  .exposes(p => p.view, 'usersView')
+  .exposes(p => p.eventTracker, 'usersViewTracker')
+  .asSingleInstance();
+
+const { usersView, usersViewTracker } = builder.container(); // single UsersProjection instance
+```
+
+Accessing an alias whose selector returns `undefined` throws. Not supported with `.asInstancePerDependency()`.
+
 ## Auto-wiring (`addResolver`)
 
 Register a predicate to automatically wire unaliased types to an alias. The predicate receives an instance; exactly one type must match — multiple matches throw.

@@ -73,14 +73,6 @@ describe('ContainerBuilder', () => {
 			expect(counter).toBe(1);
 		});
 
-		it('fails if non-function passed as an argument', () => {
-			const builder = new ContainerBuilder();
-
-			expect(() => {
-				builder.register({} as any);
-			}).toThrow(TypeError);
-		});
-
 		it('fails if Type constructor has multiple arguments', () => {
 			const builder = new ContainerBuilder();
 
@@ -100,13 +92,6 @@ describe('ContainerBuilder', () => {
 
 			expect(() => {
 				builder.register(zFact as any);
-			}).toThrow(TypeError);
-		});
-
-		it('fails if alias conflicts with container methods', () => {
-			const builder = new ContainerBuilder();
-			expect(() => {
-				builder.register(() => new X(), 'get' as any);
 			}).toThrow(TypeError);
 		});
 

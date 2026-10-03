@@ -23,7 +23,8 @@ Source is TypeScript in `src/`, compiled to `dist/` (the published `main`). Test
 1. `ContainerBuilder` collects `TypeConfig` registrations.
 2. `builder.container()` freezes the type list and instantiates a `Container`.
 3. `Container` defines a lazy getter per alias — instances are created on first access.
-4. Types registered without an alias are instantiated eagerly at container creation (side-effect initializers).
+4. Types registered without an alias (neither `.as()`/`.asOneOf()` nor `.exposes()`) are instantiated eagerly at container creation (side-effect initializers).
+5. `.exposes(selector, alias)` defines an alias resolving to `selector(instance)` of the registration's cached instance.
 
 ### Key classes
 

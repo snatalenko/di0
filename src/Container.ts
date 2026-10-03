@@ -3,6 +3,7 @@ import { ContainerBuilder } from './ContainerBuilder.ts';
 import type { ClassConstructor, ClassOrFactory, Factory } from './ClassOrFactory.ts';
 import { INSTANCE_PER_CONTAINER, INSTANCE_SINGLE } from './LifetimeMode.ts';
 import { TypeConfig } from './TypeConfig.ts';
+import { assertAliasOrId, assertObject, assertString } from './assert.ts';
 
 type ParameterObject = {
 	[key: string]: any
@@ -16,11 +17,8 @@ function isClass<T, C>(func: ClassOrFactory<T, C>):
 		&& Function.prototype.toString.call(func).startsWith('class');
 }
 
-function extendContainer<T>(container: T, additionalParameters: ParameterObject): T {
-	if (!container)
-		throw new TypeError('container argument required');
-	if (typeof additionalParameters !== 'object' || !additionalParameters)
-		throw new TypeError('additionalArguments argument must be an Object');
+function extendContainer<T extends object>(container: T, additionalParameters: ParameterObject): T {
+	assertObject(additionalParameters, 'additionalParams');
 
 	const paramDescriptors = Object.getOwnPropertyDescriptors(additionalParameters);
 	return Object.create(container, paramDescriptors);
@@ -39,7 +37,7 @@ export class Container {
 	};
 
 	/** Tracks what is currently being resolved — string aliases and symbol type IDs */
-	protected readonly _dependencyStack: Set<string | Symbol> = new Set();
+	protected readonly _dependencyStack: Set<string | symbol> = new Set();
 
 	constructor({ types, singletons, resolvers = new Map(), builderFactory }: {
 		types: Readonly<TypeConfig<any>[]>,
@@ -54,17 +52,22 @@ export class Container {
 
 		const singleAliases = new Set<string>();
 		const collectionAliases = new Set<string>();
-		for (const { aliases, collectionAliases: ca } of this.#types) {
+		const exposedAliases = new Set<string>();
+		for (const { aliases, collectionAliases: ca, exposedAliases: ea } of this.#types) {
 			for (const alias of aliases) {
 				if (ca.has(alias))
 					collectionAliases.add(alias);
 				else
 					singleAliases.add(alias);
 			}
+			for (const alias of ea.keys())
+				exposedAliases.add(alias);
 		}
 		for (const alias of collectionAliases) {
 			if (singleAliases.has(alias))
 				throw new TypeError(`Alias "${alias}" is registered with both .as() and .asOneOf() — use one or the other`);
+			if (exposedAliases.has(alias))
+				throw new TypeError(`Alias "${alias}" is registered with both .exposes() and .asOneOf() — use one or the other`);
 		}
 
 		for (const [alias] of this.#resolvers) {
@@ -75,8 +78,8 @@ export class Container {
 			});
 		}
 
-		for (const { aliases } of this.#types) {
-			for (const alias of aliases) {
+		for (const { aliases, exposedAliases: ea } of this.#types) {
+			for (const alias of [...aliases, ...ea.keys()]) {
 				Object.defineProperty(this, alias, {
 					get: collectionAliases.has(alias)
 						? () => this.getAll(alias)
@@ -100,7 +103,7 @@ export class Container {
 		}
 
 		// Eagerly instantiate unaliased types (initializers).
-		for (const { id, type: Type, instanceType } of this.#types.filter(t => !t.aliases.length)) {
+		for (const { id, type: Type, instanceType } of this.#types.filter(t => !t.hasAliases)) {
 			if (id in this.#instances || id in this.#singletons)
 				continue;
 
@@ -113,7 +116,7 @@ export class Container {
 		}
 	}
 
-	#instantiate<T>(key: string | Symbol, Type: ClassOrFactory<T, any>): T {
+	#instantiate<T>(key: string | symbol, Type: ClassOrFactory<T, any>): T {
 		if (this._dependencyStack.has(key))
 			throw new CircularDependencyError([...this._dependencyStack, key]);
 
@@ -134,29 +137,41 @@ export class Container {
 	/**
 	 * Get instance by alias
 	 */
-	get(alias: string | Symbol): object {
-		if (!alias)
-			throw new TypeError('alias argument required');
+	get(alias: string | symbol): object {
+		assertAliasOrId(alias, 'alias');
 
-		const types = this.#types.filter(t => t.id === alias || typeof alias === 'string' && t.aliases.includes(alias));
+		const types = this.#types.filter(t => t.id === alias || typeof alias === 'string'
+			&& (t.aliases.includes(alias) || t.exposedAliases.has(alias)));
 		if (!types.length) {
 			if (typeof alias === 'string') {
 				const pred = this.#resolvers.get(alias);
 				if (pred)
 					return this.#resolveByPredicate(alias, pred);
 			}
-			throw new Error(`alias "${alias}" is not registered`);
+			throw new Error(`alias "${String(alias)}" is not registered`);
 		}
 
-		const { id, instanceType, type: Type } = types[types.length - 1];
+		return this.#resolve(types[types.length - 1], alias);
+	}
 
+	/** Resolve type instance or a value exposed from it under the given alias */
+	#resolve(typeConfig: TypeConfig<any>, alias: string | symbol): object {
+		const selector = typeof alias === 'string' ? typeConfig.exposedAliases.get(alias) : undefined;
+
+		return selector ?
+			this.#getExposed(alias as string, typeConfig, selector) :
+			this.#getInstance(typeConfig, alias);
+	}
+
+	/** Get cached type instance or create a new one, using `key` to track the dependency resolution */
+	#getInstance({ id, instanceType, type: Type }: TypeConfig<any>, key: string | symbol): object {
 		if (id in this.#singletons)
 			return this.#singletons[id];
 
 		if (id in this.#instances)
 			return this.#instances[id];
 
-		const instance = this.#instantiate(alias, Type);
+		const instance = this.#instantiate(key, Type);
 
 		if (instanceType === INSTANCE_SINGLE)
 			this.#singletons[id] = instance;
@@ -166,10 +181,31 @@ export class Container {
 		return instance;
 	}
 
+	/** Get value derived from the type instance with a given selector */
+	#getExposed(alias: string, typeConfig: TypeConfig<any>, selector: (instance: any) => unknown): object {
+		if (this._dependencyStack.has(alias))
+			throw new CircularDependencyError([...this._dependencyStack, alias]);
+
+		let instance: object;
+		this._dependencyStack.add(alias);
+		try {
+			instance = this.#getInstance(typeConfig, typeConfig.id);
+		}
+		finally {
+			this._dependencyStack.delete(alias);
+		}
+
+		const value = selector(instance);
+		if (value === undefined)
+			throw new Error(`alias "${alias}" is not exposed by ${typeConfig.type.name || 'anonymous'} instance`);
+
+		return value as object;
+	}
+
 	/** Scan already-created instances for predicate matches */
 	* #findInstancesByPredicate(pred: (instance: any) => boolean): IterableIterator<any> {
-		for (const { id, aliases } of this.#types) {
-			if (aliases.length)
+		for (const { id, hasAliases } of this.#types) {
+			if (hasAliases)
 				continue; // unaliased types only
 
 			if (id in this.#instances && pred(this.#instances[id]))
@@ -185,8 +221,8 @@ export class Container {
 	 * Only runs when #resolveByInstances found nothing.
 	 */
 	* #findPrototypesByPredicate(pred: (instance: any) => boolean): IterableIterator<any> {
-		for (const { id, type: Type, aliases } of this.#types) {
-			if (aliases.length)
+		for (const { id, type: Type, hasAliases } of this.#types) {
+			if (hasAliases)
 				continue; // unaliased types only
 			if (this._dependencyStack.has(id))
 				continue; // skip types currently being constructed
@@ -231,18 +267,18 @@ export class Container {
 	 *   - `false` — no registration and no resolver covers the alias
 	 *   - `undefined` — a resolver is registered but no cached instance matches yet (outcome uncertain without instantiation)
 	 */
-	has(alias: string | Symbol): boolean | undefined {
-		if (!alias)
-			throw new TypeError('alias argument required');
+	has(alias: string | symbol): boolean | undefined {
+		assertAliasOrId(alias, 'alias');
 
-		if (this.#types.some(t => t.id === alias || typeof alias === 'string' && t.aliases.includes(alias)))
+		if (this.#types.some(t => t.id === alias || typeof alias === 'string'
+			&& (t.aliases.includes(alias) || t.exposedAliases.has(alias))))
 			return true;
 
 		if (typeof alias === 'string') {
 			const pred = this.#resolvers.get(alias);
 			if (pred) {
-				const alreadyResolved = this.#types.some(({ id, aliases: typeAliases }) => {
-					if (typeAliases.length)
+				const alreadyResolved = this.#types.some(({ id, hasAliases }) => {
+					if (hasAliases)
 						return false;
 
 					const inst = this.#instances[id] ?? this.#singletons[id];
@@ -260,14 +296,13 @@ export class Container {
 	 * Get all instances by alias
 	 */
 	getAll(alias: string): object[] {
-		if (!alias)
-			throw new TypeError('alias argument required');
+		assertString(alias, 'alias');
 
-		const types = this.#types.filter(t => t.aliases.includes(alias));
+		const types = this.#types.filter(t => t.aliases.includes(alias) || t.exposedAliases.has(alias));
 		if (!types.length)
 			throw new Error(`alias "${alias}" is not registered`);
 
-		return types.map(({ id }) => this.get(id));
+		return types.map(t => this.#resolve(t, alias));
 	}
 
 	createInstance<TClass extends new (...args: any) => any>(

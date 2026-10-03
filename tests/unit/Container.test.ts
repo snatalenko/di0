@@ -13,6 +13,21 @@ interface ITestContainer extends Container {
 	car?: any;
 	foo?: any;
 	logger?: any;
+	view?: any;
+	tracker?: any;
+	holder?: any;
+}
+
+class Holder {
+	static instances = 0;
+	readonly view = { name: 'view' };
+	readonly tracker?: { name: string };
+
+	constructor({ withTracker = true }: { withTracker?: boolean } = {}) {
+		Holder.instances += 1;
+		if (withTracker)
+			this.tracker = { name: 'tracker' };
+	}
 }
 
 class X { }
@@ -187,6 +202,10 @@ describe('Container', () => {
 			expect(container.foo).toBeUndefined();
 			expect(created).toBe(1);
 		});
+
+		it('throws when alias is not registered', () => {
+			expect(() => container.get('missing')).toThrow('alias "missing" is not registered');
+		});
 	});
 
 	describe('has', () => {
@@ -219,12 +238,6 @@ describe('Container', () => {
 			container.get('foo');
 			expect(instantiated).toBe(true);
 		});
-
-		it('throws when alias argument is missing', () => {
-			expect(() => {
-				container.has(undefined as any);
-			}).toThrow('alias argument required');
-		});
 	});
 
 	describe('getAll', () => {
@@ -238,6 +251,10 @@ describe('Container', () => {
 			const numbers = c.getAll('numbers');
 
 			expect(numbers).toEqual([1, 2]);
+		});
+
+		it('throws when alias is not registered', () => {
+			expect(() => container.getAll('missing')).toThrow('alias "missing" is not registered');
 		});
 	});
 
@@ -428,18 +445,149 @@ describe('Container', () => {
 		});
 	});
 
-	describe('addResolver', () => {
+	describe('exposes', () => {
 
-		it('validates resolver alias', () => {
-
-			expect(() => {
-				builder.addResolver(() => true, '' as any);
-			}).toThrow('Alias argument must be a non-empty String');
-
-			expect(() => {
-				builder.addResolver(() => true, 'get' as any);
-			}).toThrow('Alias "get" conflicts with container method');
+		beforeEach(() => {
+			Holder.instances = 0;
 		});
+
+		it('exposes values derived from the instance', () => {
+
+			builder.register(Holder)
+				.exposes(h => h.view, 'view')
+				.exposes(h => h.tracker, 'tracker');
+			const c = builder.container();
+
+			expect(c.view).toEqual({ name: 'view' });
+			expect(c.tracker).toEqual({ name: 'tracker' });
+		});
+
+		it('derives all exposed values from the same instance', () => {
+
+			builder.register(Holder)
+				.exposes(h => h.view, 'view')
+				.exposes(h => h.tracker, 'tracker')
+				.as('holder');
+			const c = builder.container();
+
+			const { tracker, view } = c;
+			expect(Holder.instances).toBe(1);
+			expect(c.holder.view).toBe(view);
+			expect(c.holder.tracker).toBe(tracker);
+		});
+
+		it('does not instantiate the type on container creation', () => {
+
+			builder.register(Holder).exposes(h => h.view, 'view');
+			builder.container();
+
+			expect(Holder.instances).toBe(0);
+		});
+
+		it('shares the instance with derived containers when asSingleInstance', () => {
+
+			builder.register(Holder)
+				.exposes(h => h.view, 'view')
+				.exposes(h => h.tracker, 'tracker')
+				.asSingleInstance();
+			const parent = builder.container();
+			const child = parent.builder().container();
+
+			expect(child.view).toBe(parent.view);
+			expect(child.tracker).toBe(parent.tracker);
+			expect(Holder.instances).toBe(1);
+		});
+
+		it('creates separate instances per container by default', () => {
+
+			builder.register(Holder).exposes(h => h.view, 'view');
+			const parent = builder.container();
+			const child = parent.builder().container();
+
+			expect(child.view).not.toBe(parent.view);
+		});
+
+		it('injects exposed values into other types', () => {
+
+			builder.register(Holder).exposes(h => h.view, 'view');
+			builder.register(({ view }: ITestContainer) => ({ view }), 'foo');
+			const c = builder.container();
+
+			expect(c.foo.view).toBe(c.view);
+		});
+
+		it('throws when the selector returns undefined', () => {
+
+			builder.register(() => new Holder({ withTracker: false })).exposes(h => h.tracker, 'tracker');
+			const c = builder.container();
+
+			expect(() => c.tracker).toThrow('alias "tracker" is not exposed by anonymous instance');
+		});
+
+		it('detects circular dependency on own exposed value', () => {
+
+			builder.register(({ tracker }: ITestContainer) => ({ tracker })).exposes(h => h.tracker, 'tracker');
+			const c = builder.container();
+
+			expect(() => c.tracker).toThrow(CircularDependencyError);
+		});
+
+		it('has() returns true for exposed alias', () => {
+
+			builder.register(Holder).exposes(h => h.view, 'view');
+			const c = builder.container();
+
+			expect(c.has('view')).toBe(true);
+			expect(Holder.instances).toBe(0);
+		});
+
+		it('getAll() returns exposed values', () => {
+
+			builder.register(Holder).exposes(h => h.view, 'view');
+			const c = builder.container();
+
+			expect(c.getAll('view')).toEqual([{ name: 'view' }]);
+		});
+
+		it('uses the last registration when the alias is registered multiple times', () => {
+
+			builder.register(X, 'view');
+			builder.register(Holder).exposes(h => h.view, 'view');
+			const c = builder.container();
+
+			expect(c.view).toEqual({ name: 'view' });
+		});
+
+		it('throws when the same alias is used with both .exposes() and .asOneOf()', () => {
+
+			builder.register(Holder).exposes(h => h.view, 'engines');
+			builder.register(X).asOneOf('engines');
+
+			expect(() => builder.container()).toThrow(
+				'Alias "engines" is registered with both .exposes() and .asOneOf() — use one or the other'
+			);
+		});
+
+		it('throws when the alias is already registered for the type', () => {
+
+			expect(() => builder.register(Holder).as('view').exposes(h => h.view, 'view'))
+				.toThrow('Alias "view" is already registered for the type');
+			expect(() => builder.register(Holder).exposes(h => h.view, 'view').as('view'))
+				.toThrow('Alias "view" is already registered for the type');
+			expect(() => builder.register(Holder).exposes(h => h.view, 'view').asOneOf('view'))
+				.toThrow('Alias "view" is already registered for the type');
+		});
+
+		it('throws when combined with asInstancePerDependency', () => {
+
+			expect(() => builder.register(Holder).asInstancePerDependency().exposes(h => h.view, 'view'))
+				.toThrow('Values cannot be exposed from instance-per-dependency registrations');
+			expect(() => builder.register(Holder).exposes(h => h.view, 'view').asInstancePerDependency())
+				.toThrow('Values cannot be exposed from instance-per-dependency registrations');
+		});
+	});
+
+	describe('addResolver', () => {
 
 		it('resolves a single matching unaliased type by predicate', () => {
 

@@ -1,7 +1,7 @@
 import { Container } from "./Container.ts";
 import type { ClassConstructor, ClassOrFactory, Factory } from "./ClassOrFactory.ts";
 import { TypeConfig } from "./TypeConfig.ts";
-import { validateAlias } from "./validateAlias.ts";
+import { assertAlias } from "./assert.ts";
 
 type TParameterObject = {
 	[key: string]: any
@@ -68,7 +68,7 @@ export class ContainerBuilder<TContainerInterface = any> {
 	 * Exactly one unaliased type must match — zero or multiple matches throw at access time.
 	 */
 	addResolver(pred: (instance: any) => boolean, alias: keyof TContainerInterface): this {
-		validateAlias(alias);
+		assertAlias(alias);
 		this.#resolvers.set(alias as string, pred);
 		return this;
 	}
@@ -86,7 +86,7 @@ export class ContainerBuilder<TContainerInterface = any> {
 			builderFactory: ({ singletons }) => new BuilderType({
 				types: this.#resolvers.size
 					? this.#types
-					: this.#types.filter(t => t.aliases.length),
+					: this.#types.filter(t => t.hasAliases),
 				singletons,
 				resolvers: this.#resolvers
 			})
