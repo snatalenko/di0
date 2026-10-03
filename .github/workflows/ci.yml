@@ -38,18 +38,15 @@ jobs:
 
   coveralls:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [24.x]
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 24.x
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci --no-optional
+        node-version: 24.x
+    - run: npm ci --omit=optional
       env:
         CI: true
     - run: npm run test:coverage
     - name: Submit to Coveralls
-      uses: coverallsapp/github-action@v2
+      uses: coverallsapp/github-action@v2.3.8

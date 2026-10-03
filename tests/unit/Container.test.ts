@@ -149,7 +149,7 @@ describe('Container', () => {
 
 			expect(() => {
 				container.get('a');
-			}).toThrowError(CircularDependencyError);
+			}).toThrow(CircularDependencyError);
 
 			expect(() => {
 				container.get('a');
@@ -736,7 +736,7 @@ describe('Container', () => {
 			builder.register(X);
 			const c = builder.container();
 
-			expect(() => c.engine).toThrowError(AmbiguousResolverError);
+			expect(() => c.engine).toThrow(AmbiguousResolverError);
 
 			expect(() => c.engine).toThrow(
 				'Multiple types matched resolver for alias "engine" (X, X): use .as() to disambiguate'

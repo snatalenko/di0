@@ -5,7 +5,7 @@
         "lib": [
             "ES2022"
         ],
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
@@ -13,7 +13,6 @@
         "isolatedModules": true,
         "removeComments": false,
         "sourceMap": true,
-        "alwaysStrict": false,
         "noEmit": true,
         "allowImportingTsExtensions": true,
         "rewriteRelativeImportExtensions": true
