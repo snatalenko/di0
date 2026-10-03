@@ -1,3 +1,37 @@
+# [1.3.0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0) (2026-03-18)
+
+
+### Features
+
+* `addResolver` for automatic wiring later registered types ([cf9dfff](https://github.com/snatalenko/di0/commit/cf9dfff48acb72799a9021e0e283a7dbc311810d))
+* `asOneOf` method for registering multiple types under the same alias ([1fede25](https://github.com/snatalenko/di0/commit/1fede25bf63489adbfe37306c3e44241123abcf9))
+
+### Changes
+
+* Allow instances registration w\o an alias ([47db2e5](https://github.com/snatalenko/di0/commit/47db2e517f2fa3965d7a40bb5be143f5d5d388ae))
+
+### Documentation
+
+* Remove gotchas section from CONTRIBUTING.md ([5e95203](https://github.com/snatalenko/di0/commit/5e952032ca3085e142f03f373e9748c91023646f))
+* Update README.md, add CONTRIBUTING.md, change license to Apache-2.0 ([55536dc](https://github.com/snatalenko/di0/commit/55536dc261b3a4f979ac15329c878f6a63117201))
+* Add tests/audit badge ([33aac86](https://github.com/snatalenko/di0/commit/33aac86facdcbe874ab33c02879bfff5fae8b231))
+* Update instructions on how to run a single test ([7183bb9](https://github.com/snatalenko/di0/commit/7183bb98c21e351dfff33a50a98d604f419ef472))
+
+### Tests
+
+* Use Jest instead of Mocha and Nyc ([dba8c6a](https://github.com/snatalenko/di0/commit/dba8c6a8d431c63442a61d73c607bfa135322984))
+* Cover additional instance lifecycle cases ([23c5138](https://github.com/snatalenko/di0/commit/23c513807c46de1a411d7b31cf6331011c1f5b45))
+
+### Build System
+
+* Cleanup obsolete tags on new version creation ([b9f2382](https://github.com/snatalenko/di0/commit/b9f2382694e08a82f46d53b0e8f31b9e538c1f9b))
+* Add GitHub Actions workflow for publishing to NPM ([c39aaa3](https://github.com/snatalenko/di0/commit/c39aaa382eff49a2e092e5fa15dbecf163bf825b))
+* Add audit, tests, and coveralls build actions ([f33baa2](https://github.com/snatalenko/di0/commit/f33baa23e40ae7fcf083895603cb1a5671809349))
+* Enable native Node.js type stripping support ([89bfbc2](https://github.com/snatalenko/di0/commit/89bfbc250f6e0cc3f7ac22cadeb911c09bb6800f))
+* Add separate ESM/CJS builds ([8e519f8](https://github.com/snatalenko/di0/commit/8e519f81c7607f5283393e8896c96a28f68587b1))
+* Exclude unnecessary configs and docs from package ([9f9cc1e](https://github.com/snatalenko/di0/commit/9f9cc1e3628a2a86f7af923b19d964aaf1d02d56))
+
+
 # [1.3.0-6](https://github.com/snatalenko/di0/compare/v1.3.0-5...v1.3.0-6) (2026-02-27)
 
 
