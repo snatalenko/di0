@@ -1,3 +1,9 @@
+## [1.4.0-beta.1](https://github.com/snatalenko/di0/compare/v1.4.0-beta.0...v1.4.0-beta.1) (2026-10-03)
+
+### Build System
+
+* Separate build scripts and update engine requirements ([2c1d9a7](https://github.com/snatalenko/di0/commit/2c1d9a773f8aa385d9e111c258edf003725cbdde))
+
 ## [1.4.0-beta.0](https://github.com/snatalenko/di0/compare/v1.3.0...v1.4.0-beta.0) (2026-10-03)
 
 ### Features
