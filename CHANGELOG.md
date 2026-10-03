@@ -1,3 +1,18 @@
+## [1.4.0-beta.0](https://github.com/snatalenko/di0/compare/v1.3.0...v1.4.0-beta.0) (2026-10-03)
+
+### Features
+
+* TypeConfig.exposes() to expose values derived from a registered instance under their own aliases ([9168919](https://github.com/snatalenko/di0/commit/9168919ecb9792a02716ed8b5f48bbf03bc6e87a))
+
+### Security
+
+* Fix vulnerabilities in dev dependencies ([f040db1](https://github.com/snatalenko/di0/commit/f040db1d0abcba379bf2ebfea8351a47e89388ad))
+
+### Build System
+
+* Replace npmignore with explicit list of files ([db69f0a](https://github.com/snatalenko/di0/commit/db69f0a18accb04ae40e443e5ea52ea6d9a94522))
+* Publish pre-releases under npm dist-tag matching their preid (alpha, beta, rc) ([0c483d0](https://github.com/snatalenko/di0/commit/0c483d0b248a4b92bf0c07332317e8840730bb57))
+* Upgrade conventional-changelog to v8 ([62bc978](https://github.com/snatalenko/di0/commit/62bc978811df2858eec6cf94d8bdbf80c6172ab6))
 
 ## [1.3.0](https://github.com/snatalenko/di0/compare/v1.2.0...v1.3.0) (2026-03-18)
 
@@ -9,6 +24,11 @@
 ### Changes
 
 * Allow instances registration w\o an alias ([47db2e5](https://github.com/snatalenko/di0/commit/47db2e517f2fa3965d7a40bb5be143f5d5d388ae))
+
+### Internal Fixes
+
+* extensionless imports in ESM module ([66dc226](https://github.com/snatalenko/di0/commit/66dc22654b99ace527b38d8c7772e662e8f97922))
+* Resolvers forcing instance creations and causing circular dependencies ([31c2678](https://github.com/snatalenko/di0/commit/31c267845218796a0f4655f28383377378ee2360))
 
 ### Build System
 
