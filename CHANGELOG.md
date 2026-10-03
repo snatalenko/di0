@@ -1,3 +1,9 @@
+## [1.4.0-beta.2](https://github.com/snatalenko/di0/compare/v1.4.0-beta.1...v1.4.0-beta.2) (2026-10-03)
+
+### Internal Fixes
+
+* Tests in Node18 env ([a481006](https://github.com/snatalenko/di0/commit/a48100683e67d06f90b9d866497f24e0a6c9bf97))
+
 ## [1.4.0-beta.1](https://github.com/snatalenko/di0/compare/v1.4.0-beta.0...v1.4.0-beta.1) (2026-10-03)
 
 ### Build System
